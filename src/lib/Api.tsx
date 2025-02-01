@@ -21,7 +21,8 @@ export const Apis = {
     }),
 
   // Products
-  gepProducts: () => Request.get("/product"),
+  getProducts: (categoryId?: string ) =>
+    Request.get(`/product?categoryId=${categoryId}`),
 
   // Category
   getCategory: () => Request.get("/category"),

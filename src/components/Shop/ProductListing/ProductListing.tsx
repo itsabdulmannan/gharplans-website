@@ -1,25 +1,38 @@
 import { Link } from "react-router-dom";
-import { Product } from "../../types";
-import { useProductHook } from "./hooks/productHook";
+import { Product } from "../../../types/index";
 import { useEffect, useState } from "react";
+import { useProductHook } from "../hooks/productHook";
 
-export default function ProductCard() {
+export default function ProductListing({
+  searchQuery,
+  selectedCategory,
+  currentPage,
+  setCurrentPage,
+}: {
+  searchQuery: string;
+  selectedCategory: string;
+  currentPage: number;
+  setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
+}) {
   const { getProduct } = useProductHook();
   const [productData, setProductData] = useState<Product[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  console.log(selectedCategory);
 
   useEffect(() => {
-    if (productData.length === 0) {
-      getProduct(setProductData, () => setLoading(false));
-    }
-  }, []);
+    getProduct(setProductData, setLoading, selectedCategory);
+  }, [selectedCategory, currentPage]);
+
+  const filteredProducts = productData.filter((product) =>
+    product.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
-    <div>
+    <div className="grid grid-cols-1 gap-y-10 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
       {loading ? (
         <div>Loading...</div>
-      ) : (
-        productData.map((productItem) => (
+      ) : filteredProducts.length > 0 ? (
+        filteredProducts.map((productItem) => (
           <Link
             key={productItem.id}
             to={`/shop/product/${productItem.id}`}
@@ -45,6 +58,8 @@ export default function ProductCard() {
             </div>
           </Link>
         ))
+      ) : (
+        <div>No products found for "{searchQuery}"</div>
       )}
     </div>
   );

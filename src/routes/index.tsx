@@ -1,7 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
 import RootLayout from "../layouts/RootLayout";
-import Shop from "../pages/Shop";
-import ProductDetail from "../pages/ProductDetail";
+import Shop from "../components/Shop/Filters/Shop";
+import ProductDetail from "../components/Shop/ProductDetails/ProductDetail";
 import Cart from "../pages/Cart";
 import LoginForm from "../components/Auth/LoginForm";
 import SignupForm from "../components/Auth/SignupForm";

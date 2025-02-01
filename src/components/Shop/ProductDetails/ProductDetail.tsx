@@ -2,7 +2,7 @@ import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ShoppingCart, Heart, Share2, Star, Truck, Shield, ArrowLeft } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { Product } from '../types';
+import { Product } from '../../../types';
 
 // Mock data - replace with actual API call
 const mockProduct: Product = {
