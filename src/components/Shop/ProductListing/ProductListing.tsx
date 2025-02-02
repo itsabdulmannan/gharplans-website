@@ -7,8 +7,7 @@ export default function ProductListing({
   searchQuery,
   selectedCategory,
   selectedPrice,
-  currentPage,
-  setCurrentPage,
+  currentPage
 }: {
   searchQuery: string;
   selectedCategory: string;

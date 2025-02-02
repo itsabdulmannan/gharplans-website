@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom"; // Use useNavigate instead of useHistory
-import { Building2, Menu, X, User, ShoppingCart } from "lucide-react";
+import { Menu, X, User, ShoppingCart } from "lucide-react";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = React.useState(false);
