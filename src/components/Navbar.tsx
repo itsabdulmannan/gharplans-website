@@ -1,10 +1,20 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom"; // Use useNavigate instead of useHistory
 import { Building2, Menu, X, User, ShoppingCart } from "lucide-react";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = React.useState(false);
-  const [isLoggedIn, setIsLoggedIn] = React.useState(true); 
+  const [isLoggedIn, setIsLoggedIn] = React.useState(true);
+  const navigate = useNavigate();
+
+  React.useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      setIsLoggedIn(true);
+    } else {
+      setIsLoggedIn(false);
+    }
+  }, []);
 
   const navLinks = [
     { name: "House Designs", path: "/house-designs" },
@@ -18,13 +28,24 @@ export default function Navbar() {
     { name: "Contact Us", path: "/contact" },
   ];
 
+  const handleUserClick = () => {
+    if (isLoggedIn) {
+      navigate("/profile");
+    } else {
+      navigate("/login");
+    }
+  };
+
   return (
     <nav className="bg-white shadow-lg">
       <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex items-center">
             <Link to="/" className="flex items-center">
-              <Building2 className="h-8 w-8 text-blue-600" />
+              <img
+                src="/src/assets/logo.png"
+                className="h-8 w-8 text-blue-600"
+              />
               <span className="ml-2 text-xl font-bold text-gray-900">
                 GharPlans
               </span>
@@ -42,21 +63,16 @@ export default function Navbar() {
                 {link.name}
               </Link>
             ))}
-            <Link
-              to="/login"
-              className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700 transition-colors"
-            >
-              Login
-            </Link>
           </div>
 
           {/* Right icons (Profile and Cart) */}
           <div className="flex items-center space-x-4">
-            {isLoggedIn && (
-              <Link to="/profile" className="text-gray-600 hover:text-blue-600">
-                <User className="h-6 w-6" />
-              </Link>
-            )}
+            <button
+              onClick={handleUserClick}
+              className="text-gray-600 hover:text-blue-600"
+            >
+              <User className="h-6 w-6" />
+            </button>
             <Link to="/cart" className="text-gray-600 hover:text-blue-600">
               <ShoppingCart className="h-6 w-6" />
             </Link>

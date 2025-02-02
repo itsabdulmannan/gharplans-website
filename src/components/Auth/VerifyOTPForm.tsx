@@ -4,7 +4,7 @@ import toast from "react-hot-toast";
 import { useAuthHook } from "./useHook";
 
 export default function VerifyOTPForm() {
-  const { veriftOtp } = useAuthHook();
+  const { veriftOtp, forgotPassword } = useAuthHook();
   const navigate = useNavigate();
   const location = useLocation();
   const email = location.state?.email;
@@ -14,6 +14,9 @@ export default function VerifyOTPForm() {
   const inputRefs = Array(4)
     .fill(0)
     .map(() => React.useRef<HTMLInputElement>(null));
+
+  const [loading, setLoading] = React.useState(false);
+  const [resendLoading, setResendLoading] = React.useState(false); // Added state for resend OTP loader
 
   const handleChange = (index: number, value: string) => {
     if (value.length <= 1) {
@@ -45,6 +48,8 @@ export default function VerifyOTPForm() {
       return;
     }
 
+    setLoading(true);
+
     try {
       const response = await veriftOtp(email, otpValue);
       if (response?.status === 200) {
@@ -58,6 +63,22 @@ export default function VerifyOTPForm() {
       }
     } catch (error) {
       toast.error("Failed to verify OTP. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleResendOtp = async () => {
+    setResendLoading(true); // Set resend loading to true
+
+    try {
+      await forgotPassword(email); // Call API to resend OTP
+      console.log("Resending OTP to email:", email);
+      toast.success("New OTP sent successfully!");
+    } catch (error) {
+      toast.error("Failed to resend OTP. Please try again.");
+    } finally {
+      setResendLoading(false); // Reset resend loading state
     }
   };
 
@@ -105,21 +126,75 @@ export default function VerifyOTPForm() {
             <div>
               <button
                 type="submit"
-                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                disabled={loading}
+                className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${
+                  loading ? "bg-blue-400" : "bg-blue-600"
+                } hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500`}
               >
-                Verify OTP
+                {loading ? (
+                  <svg
+                    className="animate-spin h-5 w-5 mr-3"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="none"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="4"
+                      d="M4 12a8 8 0 0 1 16 0"
+                    ></path>
+                  </svg>
+                ) : (
+                  "Verify OTP"
+                )}
               </button>
             </div>
           </form>
 
           <div className="mt-6">
             <button
-              onClick={() => {
-                toast.success("New OTP sent successfully!");
-              }}
+              onClick={handleResendOtp}
+              disabled={resendLoading} // Disable button when loading
               className="w-full flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-500 hover:bg-gray-50"
             >
-              Resend OTP
+              {resendLoading ? (
+                <svg
+                  className="animate-spin h-5 w-5 mr-3"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="none"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="4"
+                    d="M4 12a8 8 0 0 1 16 0"
+                  ></path>
+                </svg>
+              ) : (
+                "Resend OTP"
+              )}
             </button>
           </div>
         </div>

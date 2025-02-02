@@ -12,6 +12,8 @@ export default function ResetPasswordForm() {
     confirmPassword: "",
   });
 
+  const [loading, setLoading] = React.useState(false);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -24,17 +26,20 @@ export default function ResetPasswordForm() {
       return;
     }
 
-    // Call the resetPassword function
+    setLoading(true);
+
     try {
       const response = await resetPassword(formData.password);
-      if (response?.data?.status === "success") {
+      if (response && response.status === 200) {
         toast.success("Password reset successfully!");
-        navigate("/login"); // Redirect to login after success
+        navigate("/login");
       } else {
         toast.error("Failed to reset password. Please try again.");
       }
     } catch (error) {
       toast.error("An error occurred while resetting the password.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -103,9 +108,38 @@ export default function ResetPasswordForm() {
             <div>
               <button
                 type="submit"
-                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                disabled={loading}
+                className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${
+                  loading ? "bg-blue-400" : "bg-blue-600"
+                } hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500`}
               >
-                Reset Password
+                {loading ? (
+                  <svg
+                    className="animate-spin h-5 w-5 mr-3"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="none"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="4"
+                      d="M4 12a8 8 0 0 1 16 0"
+                    ></path>
+                  </svg>
+                ) : (
+                  "Reset Password"
+                )}
               </button>
             </div>
           </form>

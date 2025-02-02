@@ -39,4 +39,14 @@ export const Apis = {
     Request.get(`/product/similar-products/${id}`),
   // Category
   getCategory: () => Request.get("/category"),
+  // User
+  getUser: () =>
+    Request.get("/user", {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    }),
+  bankAccountDetails: () => {
+    return Request.get("/bank/bankAccountDetails");
+  },
 };

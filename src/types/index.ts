@@ -32,7 +32,7 @@ export interface Category {
   name: string;
 }
 export interface UserDto {
-  firsName: string;
+  firstName: string;
   lastName: string;
   email: string;
   password: string;
@@ -41,4 +41,6 @@ export interface UserDto {
   city: string;
   dob: string;
   profileImage: string;
+  role: string;
+  dateOfBirth: string;
 }

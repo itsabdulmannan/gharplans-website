@@ -1,8 +1,16 @@
 import { Link } from "react-router-dom";
 import { ArrowLeft, CreditCard } from "lucide-react";
 import toast from "react-hot-toast";
+import { useCart } from "./useHook";
+import { useEffect, useState } from "react";
 
 export default function Checkout() {
+  const { getBankAccountDetails } = useCart();
+  const [bankAccountDetails, setBankAccountDetails] = useState<any>({});
+  useEffect(() => {
+    getBankAccountDetails(setBankAccountDetails);
+  }, []);
+  console.log(bankAccountDetails);
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <h1 className="text-3xl font-bold text-gray-900 mb-8">Checkout</h1>
@@ -14,51 +22,40 @@ export default function Checkout() {
               Bank Account Details
             </h2>
 
-            <form className="space-y-4">
+            <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <h3 className="text-sm font-medium text-gray-700">
                   Account Holder Name
-                </label>
-                <input
-                  type="text"
-                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-                  placeholder="John Doe"
-                />
+                </h3>
+                <p className="mt-1 text-gray-900">Wynter Santiago</p>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Bank Name
-                </label>
-                <input
-                  type="text"
-                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-                  placeholder="XYZ Bank"
-                />
+                <h3 className="text-sm font-medium text-gray-700">Bank Name</h3>
+                <p className="mt-1 text-gray-900">Shaeleigh Martin</p>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <h3 className="text-sm font-medium text-gray-700">
                   Account Number
-                </label>
-                <input
-                  type="text"
-                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-                  placeholder="1234567890"
-                />
+                </h3>
+                <p className="mt-1 text-gray-900">1</p>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  IFSC Code
-                </label>
-                <input
-                  type="text"
-                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-                  placeholder="XYZ12345"
-                />
+                <h3 className="text-sm font-medium text-gray-700">
+                  IFSC Code (IBAN)
+                </h3>
+                <p className="mt-1 text-gray-900">Tempor illum nihil</p>
               </div>
-            </form>
+
+              <div>
+                <h3 className="text-sm font-medium text-gray-700">
+                  Branch Code
+                </h3>
+                <p className="mt-1 text-gray-900">Laboris dolores dolo</p>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -91,7 +88,7 @@ export default function Checkout() {
 
             <Link
               to="/shop"
-              onClick={() => toast.success('Order submitted successfully!')}
+              onClick={() => toast.success("Order submitted successfully!")}
               className="mt-6 w-full flex items-center justify-center px-6 py-3 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-blue-600 hover:bg-blue-700"
             >
               Submit Order

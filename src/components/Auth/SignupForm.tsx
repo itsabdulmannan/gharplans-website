@@ -19,6 +19,7 @@ export default function SignupForm() {
     dob: "",
     profileImage: null as File | null,
   });
+  const [loading, setLoading] = React.useState(false); // Add loading state
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -38,7 +39,10 @@ export default function SignupForm() {
       return;
     }
 
+    setLoading(true);
+
     try {
+      console.log(formData);
       const response = await registerUser(formData);
 
       if (response?.status === 201) {
@@ -49,22 +53,20 @@ export default function SignupForm() {
       }
     } catch (error: any) {
       toast.error(error.response?.data?.message || "Something went wrong!");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div className="bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-      <div className="sm:mx-auto sm:w-full  sm:max-w-3xl">
-        {" "}
-        {/* Change max-w-md to max-w-lg */}
+      <div className="sm:mx-auto sm:w-full sm:max-w-3xl">
         <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
           Create your account
         </h2>
       </div>
 
       <div className="mt-5 sm:mx-auto sm:w-full sm:max-w-3xl">
-        {" "}
-        {/* Change max-w-md to max-w-lg */}
         <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
           <form className="space-y-6" onSubmit={handleSubmit}>
             <div className="grid grid-cols-2 gap-6">
@@ -92,7 +94,6 @@ export default function SignupForm() {
                 </div>
               </div>
 
-              {/* Last Name */}
               <div>
                 <label
                   htmlFor="lastName"
@@ -118,9 +119,7 @@ export default function SignupForm() {
               </div>
             </div>
 
-            {/* Row 2: Email and Contact Number */}
             <div className="grid grid-cols-2 gap-6">
-              {/* Email */}
               <div>
                 <label
                   htmlFor="email"
@@ -145,7 +144,6 @@ export default function SignupForm() {
                 </div>
               </div>
 
-              {/* Contact Number */}
               <div>
                 <label
                   htmlFor="contactNo"
@@ -171,9 +169,7 @@ export default function SignupForm() {
               </div>
             </div>
 
-            {/* Row 3: Password and Confirm Password */}
             <div className="grid grid-cols-2 gap-6">
-              {/* Password */}
               <div>
                 <label
                   htmlFor="password"
@@ -198,7 +194,6 @@ export default function SignupForm() {
                 </div>
               </div>
 
-              {/* Confirm Password */}
               <div>
                 <label
                   htmlFor="confirmPassword"
@@ -224,9 +219,7 @@ export default function SignupForm() {
               </div>
             </div>
 
-            {/* Row 4: Address and City */}
             <div className="grid grid-cols-2 gap-6">
-              {/* Address */}
               <div>
                 <label
                   htmlFor="address"
@@ -251,7 +244,6 @@ export default function SignupForm() {
                 </div>
               </div>
 
-              {/* City */}
               <div>
                 <label
                   htmlFor="city"
@@ -277,9 +269,7 @@ export default function SignupForm() {
               </div>
             </div>
 
-            {/* Row 5: Date of Birth and Profile Image */}
             <div className="grid grid-cols-2 gap-6">
-              {/* Date of Birth */}
               <div>
                 <label
                   htmlFor="dob"
@@ -303,7 +293,6 @@ export default function SignupForm() {
                 </div>
               </div>
 
-              {/* Profile Image Upload */}
               <div>
                 <label
                   htmlFor="profileImage"
@@ -327,8 +316,13 @@ export default function SignupForm() {
               <button
                 type="submit"
                 className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                disabled={loading} // Disable the button while loading
               >
-                Sign up
+                {loading ? (
+                  <div className="animate-spin h-5 w-5 border-t-2 border-white rounded-full"></div> // Rotating spinner
+                ) : (
+                  "Sign up"
+                )}
               </button>
             </div>
           </form>

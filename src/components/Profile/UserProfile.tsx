@@ -1,46 +1,49 @@
-import React, { useState } from 'react';
-import { User, Camera, FileText, CheckCircle } from 'lucide-react';
-import toast from 'react-hot-toast';
-
-// Mock data for orders and user profile
-const mockUserProfile = {
-  name: 'John Doe',
-  email: 'johndoe@example.com',
-};
+import React, { useEffect, useState } from "react";
+import { Camera, FileText, CheckCircle } from "lucide-react";
+import toast from "react-hot-toast";
+import { useUSers } from "./useHook";
+import { UserDto } from "../../types/index";
 
 const mockOrders = [
   {
-    id: '1',
-    date: '2025-01-01',
+    id: "1",
+    date: "2025-01-01",
     total: 299.99,
-    status: 'Pending',
+    status: "Pending",
     paymentScreenshot: null,
   },
   {
-    id: '2',
-    date: '2025-01-10',
+    id: "2",
+    date: "2025-01-10",
     total: 499.99,
-    status: 'Completed',
-    paymentScreenshot: 'https://via.placeholder.com/100', // Example screenshot URL
+    status: "Completed",
+    paymentScreenshot: "https://via.placeholder.com/100",
   },
 ];
 
 export default function UserProfile() {
-  const [userProfile, setUserProfile] = useState(mockUserProfile);
+  const { getUser } = useUSers();
   const [orders, setOrders] = useState(mockOrders);
-  const [selectedOrderId, setSelectedOrderId] = useState('');
-  const [paymentScreenshot, setPaymentScreenshot] = useState(null);
+  const [selectedOrderId, setSelectedOrderId] = useState("");
+  const [getUserData, setUserData] = useState<UserDto | null>(null);
+
+  useEffect(() => {
+    getUser(setUserData);
+  }, []);
 
   const handleProfileUpdate = (e: React.FormEvent) => {
     e.preventDefault();
-    toast.success('Profile updated successfully!');
-    // Logic to update the profile data
+    toast.success("Profile updated successfully!");
   };
 
   const handlePaymentUpload = (orderId: string, file: File) => {
-    toast.success(`Payment screenshot for Order #${orderId} uploaded successfully.`);
+    toast.success(
+      `Payment screenshot for Order #${orderId} uploaded successfully.`
+    );
     const updatedOrders = orders.map((order) =>
-      order.id === orderId ? { ...order, paymentScreenshot: URL.createObjectURL(file) } : order
+      order.id === orderId
+        ? { ...order, paymentScreenshot: URL.createObjectURL(file) }
+        : order
     );
     setOrders(updatedOrders);
   };
@@ -50,38 +53,47 @@ export default function UserProfile() {
       <h1 className="text-3xl font-bold text-gray-900 mb-6">User Profile</h1>
 
       {/* Profile Section */}
-      <div className="bg-white p-6 rounded-lg shadow-md mb-8">
-        <h2 className="text-xl font-semibold mb-4">Profile Details</h2>
-        <form onSubmit={handleProfileUpdate}>
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Name</label>
-              <input
-                type="text"
-                value={userProfile.name}
-                onChange={(e) => setUserProfile({ ...userProfile, name: e.target.value })}
-                className="mt-1 p-2 w-full border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Email</label>
-              <input
-                type="email"
-                value={userProfile.email}
-                onChange={(e) => setUserProfile({ ...userProfile, email: e.target.value })}
-                className="mt-1 p-2 w-full border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500"
-              />
-            </div>
-            <div className="mt-4 flex justify-end">
-              <button
-                type="submit"
-                className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
-              >
-                Update Profile
-              </button>
+      <div className="mx-auto bg-white p-8 rounded-lg shadow-lg max-w-8xl">
+        <div className="flex items-center space-x-6 mb-8">
+          <div className="flex-shrink-0">
+            <img
+              className="w-32 h-32 rounded-full border-4 border-indigo-600"
+              src={getUserData?.profileImage || "default-profile.jpg"}
+              alt="Profile"
+            />
+          </div>
+          <div>
+            <h2 className="text-3xl font-semibold text-gray-800">
+              {getUserData?.firstName} {getUserData?.lastName}
+            </h2>
+            <div className="mt-4 space-y-2">
+              <p className="text-gray-700">
+                Email:{" "}
+                <span className="text-indigo-600">{getUserData?.email}</span>
+              </p>
+              <p className="text-gray-700">
+                Phone:{" "}
+                <span className="text-indigo-600">
+                  {getUserData?.contactNo}
+                </span>
+              </p>
+              <p className="text-gray-700">
+                Address:{" "}
+                <span className="text-indigo-600">{getUserData?.address}</span>
+              </p>
+              <p className="text-gray-700">
+                City:{" "}
+                <span className="text-indigo-600">{getUserData?.city}</span>
+              </p>
+              <p className="text-gray-700">
+                Date Of Birth:{" "}
+                <span className="text-indigo-600">
+                  {getUserData?.dateOfBirth.split("T")[0]}
+                </span>
+              </p>
             </div>
           </div>
-        </form>
+        </div>
       </div>
 
       {/* Orders Section */}
@@ -89,11 +101,16 @@ export default function UserProfile() {
         <h2 className="text-xl font-semibold mb-4">My Orders</h2>
         <div className="space-y-4">
           {orders.map((order) => (
-            <div key={order.id} className="flex items-center justify-between border-b py-4">
+            <div
+              key={order.id}
+              className="flex items-center justify-between border-b py-4"
+            >
               <div className="flex items-center space-x-4">
                 <FileText className="h-6 w-6 text-gray-600" />
                 <div>
-                  <p className="font-semibold text-gray-800">Order #{order.id}</p>
+                  <p className="font-semibold text-gray-800">
+                    Order #{order.id}
+                  </p>
                   <p className="text-sm text-gray-500">Date: {order.date}</p>
                   <p className="text-sm text-gray-500">Total: ${order.total}</p>
                 </div>

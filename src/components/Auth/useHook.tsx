@@ -9,24 +9,27 @@ export const useAuthHook = () => {
   ): Promise<AxiosResponse<any> | void> => {
     try {
       const response = await Apis.login(email, password);
+
       if (response.data?.token) {
         localStorage.setItem("token", response.data.token);
-        Swal.fire({
-          icon: "success",
-          title: "Login Successful",
-          text: "You have successfully logged in!",
-          timer: 2000,
-          showConfirmButton: false,
-        });
       }
       return response;
     } catch (error: any) {
-      Swal.fire({
-        icon: "error",
-        title: "Login Failed",
-        text: error.response?.data?.message || "Something went wrong!",
-        showConfirmButton: true,
-      });
+      if (error.response?.status === 401) {
+        Swal.fire({
+          icon: "error",
+          title: "Invalid Credentials",
+          text: "Check your email and password and try again.",
+          showConfirmButton: true,
+        });
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Login Failed",
+          text: error.response?.data?.message || "Something went wrong!",
+          showConfirmButton: true,
+        });
+      }
       throw error;
     }
   };
@@ -45,12 +48,12 @@ export const useAuthHook = () => {
       }
 
       const response = await Apis.register(formData);
-
       return response;
     } catch (error) {
       throw error;
     }
   };
+
   const veriftOtp = async (
     email: string,
     otp: string

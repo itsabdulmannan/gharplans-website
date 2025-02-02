@@ -2,12 +2,13 @@ import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Mail } from "lucide-react";
 import toast from "react-hot-toast";
-import { useAuthHook } from "./useHook"; // Import your useAuthHook
+import { useAuthHook } from "./useHook";
 
 export default function ForgotPasswordForm() {
   const { forgotPassword } = useAuthHook();
   const navigate = useNavigate();
   const [email, setEmail] = React.useState("");
+  const [loading, setLoading] = React.useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -17,9 +18,11 @@ export default function ForgotPasswordForm() {
       return;
     }
 
+    setLoading(true);
+
     try {
       const response = await forgotPassword(email);
-      
+
       if (response?.status === 200) {
         toast.success("Reset instructions sent to your email!");
         navigate("/verify-otp", { state: { email, isPasswordReset: true } });
@@ -28,6 +31,8 @@ export default function ForgotPasswordForm() {
       }
     } catch (error) {
       toast.error("Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -38,7 +43,8 @@ export default function ForgotPasswordForm() {
           Reset your password
         </h2>
         <p className="mt-2 text-center text-sm text-gray-600">
-          Enter your email address and we'll send you instructions to reset your password.
+          Enter your email address and we'll send you instructions to reset your
+          password.
         </p>
       </div>
 
@@ -46,7 +52,10 @@ export default function ForgotPasswordForm() {
         <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
           <form className="space-y-6" onSubmit={handleSubmit}>
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Email address
               </label>
               <div className="mt-1 relative rounded-md shadow-sm">
@@ -68,9 +77,38 @@ export default function ForgotPasswordForm() {
             <div>
               <button
                 type="submit"
-                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                disabled={loading}
+                className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${
+                  loading ? "bg-blue-400" : "bg-blue-600"
+                } hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500`}
               >
-                Send Reset Instructions
+                {loading ? (
+                  <svg
+                    className="animate-spin h-5 w-5 mr-3"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="none"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="4"
+                      d="M4 12a8 8 0 0 1 16 0"
+                    ></path>
+                  </svg>
+                ) : (
+                  "Send Reset Instructions"
+                )}
               </button>
             </div>
           </form>

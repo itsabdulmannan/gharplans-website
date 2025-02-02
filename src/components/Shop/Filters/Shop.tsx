@@ -1,18 +1,7 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Search } from "lucide-react";
-import { Product, Category } from "../../../types";
 import { useHook } from "../../../pages/hooks/useHook";
 import ProductListing from "../ProductListing/ProductListing";
-
-const ITEMS_PER_PAGE = 12;
-
-const mockCategories: Category[] = [
-  { id: "1", name: "Building Materials" },
-  { id: "2", name: "Tools" },
-  { id: "3", name: "Safety Equipment" },
-  { id: "4", name: "Electrical" },
-  { id: "5", name: "Plumbing" },
-];
 
 export default function Shop() {
   const { getCategory } = useHook();
@@ -44,7 +33,7 @@ export default function Shop() {
                 onClick={() => setSelectedCategory("")}
                 className={`w-full text-left px-3 py-2 rounded-md ${
                   selectedCategory === ""
-                    ? "bg-blue-100 text-blue-700"
+                    ? "bg-blue-100 text-[#b1a249]"
                     : "text-gray-600 hover:bg-gray-100"
                 }`}
               >
