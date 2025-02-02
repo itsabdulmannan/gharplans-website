@@ -9,11 +9,11 @@ export default function LoginForm() {
   const { login } = useAuthHook();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false); 
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true); 
+    setLoading(true);
 
     try {
       await login(email, password);
@@ -23,7 +23,7 @@ export default function LoginForm() {
       console.error("Login Error:", error);
       toast.error("Failed to log in. Please check your credentials.");
     } finally {
-      setLoading(false); 
+      setLoading(false);
     }
   };
 
@@ -55,7 +55,7 @@ export default function LoginForm() {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="block w-full pl-10 pr-3 py-2 sm:text-sm border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                  className="block w-full pl-10 pr-3 py-2 sm:text-sm border-gray-300 rounded-md focus:ring-[#b1a249] focus:border-[#b1a249] text-[#8a7d2a]"
                   placeholder="you@example.com"
                 />
               </div>
@@ -78,7 +78,7 @@ export default function LoginForm() {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="block w-full pl-10 pr-3 py-2 sm:text-sm border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                  className="block w-full pl-10 pr-3 py-2 sm:text-sm border-gray-300 rounded-md focus:ring-[#b1a249] focus:border-[#b1a249] text-[#8a7d2a]"
                   placeholder="Password"
                 />
               </div>
@@ -89,11 +89,11 @@ export default function LoginForm() {
                 <input
                   id="remember-me"
                   type="checkbox"
-                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                  className="h-4 w-4 text-[#b1a249] focus:ring-[#b1a249] border-gray-300 rounded"
                 />
                 <label
                   htmlFor="remember-me"
-                  className="ml-2 block text-sm text-gray-900"
+                  className="ml-2 block text-sm text-[#8a7d2a]"
                 >
                   Remember me
                 </label>
@@ -102,7 +102,7 @@ export default function LoginForm() {
               <div className="text-sm">
                 <Link
                   to="/forgot-password"
-                  className="font-medium text-blue-600 hover:text-blue-500"
+                  className="font-medium text-[#b1a249] hover:text-[#8a7d2a] focus:text-[#8a7d2a] transition duration-200"
                 >
                   Forgot your password?
                 </Link>
@@ -114,8 +114,10 @@ export default function LoginForm() {
                 type="submit"
                 disabled={loading} // Disable the button when loading
                 className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${
-                  loading ? "bg-blue-400" : "bg-blue-600"
-                } hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500`}
+                  loading
+                    ? "bg-[#f3ffc0] text-[#b1a249]"
+                    : "bg-[#b1a249] text-white"
+                } hover:bg-[#f3ffc0] hover:text-[#b1a249] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#b1a249] transition duration-200`}
               >
                 {loading ? (
                   <svg
@@ -154,7 +156,9 @@ export default function LoginForm() {
                 <div className="w-full border-t border-gray-300" />
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-white text-gray-500">Or continue with</span>
+                <span className="px-2 bg-white text-gray-500">
+                  Or continue with
+                </span>
               </div>
             </div>
 

@@ -49,4 +49,17 @@ export const Apis = {
   bankAccountDetails: () => {
     return Request.get("/bank/bankAccountDetails");
   },
+  postReview: (body: any) => {
+    return Request.post("/reviews", body, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+  },
+  getReviews: (id: number, status: string) =>
+    Request.get(`/reviews?productId=${id}&status=${status}`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    }),
 };

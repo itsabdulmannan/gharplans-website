@@ -44,3 +44,26 @@ export interface UserDto {
   role: string;
   dateOfBirth: string;
 }
+
+export interface User {
+  id: number;
+  firstName: string;
+  lastName: string;
+  email: string;
+}
+
+export interface Review {
+  id: number;
+  rating: number;
+  review: string;
+  status: string;
+  createdAt: string;
+  user: User;
+  product: {
+    name: string;
+    category: {
+      name: string;
+    };
+  };
+}
+export type ReviewsData = Review[];

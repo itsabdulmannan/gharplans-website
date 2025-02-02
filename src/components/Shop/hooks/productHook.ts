@@ -38,12 +38,46 @@ export const useProductHook = () => {
       return response.data.product;
     } catch (error) {}
   };
-  const getFeaturedProducts = async (id:string, setFeaturedProducts: Function) => {
+  const getFeaturedProducts = async (
+    id: string,
+    setFeaturedProducts: Function
+  ) => {
     try {
       const response = await Apis.getFeaturedProducts(id);
       setFeaturedProducts(response.data.data);
       return response.data.products;
     } catch (error) {}
   };
-  return { getProduct, getCategory, getProductById, getFeaturedProducts };
+  const postReview = async (id: number, rating: number, review: string) => {
+    try {
+      const body = {
+        productId: id,
+        rating: rating,
+        review: review,
+      };
+      console.log(body);
+      const response = await Apis.postReview(body);
+      return response;
+    } catch (error) {
+      console.error("Error posting review:", error);
+    }
+  };
+  const getReviews = async (id: number, setReviewsData: Function) => {
+    try {
+      let status = "approved";
+      const respsone = await Apis.getReviews(id, status);
+      setReviewsData(respsone.data.data);
+      return respsone.data.reviews;
+    } catch (error) {
+      console.error("Error fetching reviews:", error);
+    }
+  };
+  return {
+    getProduct,
+    getCategory,
+    getProductById,
+    getFeaturedProducts,
+    postReview,
+    getReviews,
+  };
 };

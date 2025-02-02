@@ -75,7 +75,7 @@ export default function ResetPasswordForm() {
                   required
                   value={formData.password}
                   onChange={handleChange}
-                  className="block w-full pl-10 pr-3 py-2 sm:text-sm border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                  className="block w-full pl-10 pr-3 py-2 sm:text-sm border-gray-300 rounded-md focus:ring-[#b1a249] focus:border-[#b1a249] text-[#8a7d2a]"
                   placeholder="New Password"
                 />
               </div>
@@ -99,7 +99,7 @@ export default function ResetPasswordForm() {
                   required
                   value={formData.confirmPassword}
                   onChange={handleChange}
-                  className="block w-full pl-10 pr-3 py-2 sm:text-sm border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                  className="block w-full pl-10 pr-3 py-2 sm:text-sm border-gray-300 rounded-md focus:ring-[#b1a249] focus:border-[#b1a249] text-[#8a7d2a]"
                   placeholder="Confirm New Password"
                 />
               </div>
@@ -110,8 +110,10 @@ export default function ResetPasswordForm() {
                 type="submit"
                 disabled={loading}
                 className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${
-                  loading ? "bg-blue-400" : "bg-blue-600"
-                } hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500`}
+                  loading
+                    ? "bg-[#f3ffc0] text-[#b1a249]"
+                    : "bg-[#b1a249] hover:bg-[#f3ffc0] hover:text-[#b1a249] focus:ring-[#b1a249]"
+                } hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#b1a249] transition duration-200`}
               >
                 {loading ? (
                   <svg

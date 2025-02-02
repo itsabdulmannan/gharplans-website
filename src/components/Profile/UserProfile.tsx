@@ -36,6 +36,12 @@ export default function UserProfile() {
     toast.success("Profile updated successfully!");
   };
 
+  const handleLogout = () => {
+    toast.success("Logged out successfully!");
+    localStorage.removeItem("token");
+    window.location.reload();
+  };
+
   const handlePaymentUpload = (orderId: string, file: File) => {
     toast.success(
       `Payment screenshot for Order #${orderId} uploaded successfully.`
@@ -57,47 +63,59 @@ export default function UserProfile() {
         <div className="flex items-center space-x-6 mb-8">
           <div className="flex-shrink-0">
             <img
-              className="w-32 h-32 rounded-full border-4 border-indigo-600"
+              className="w-32 h-32 rounded-full border-4 border-[#b1a249]"
               src={getUserData?.profileImage || "default-profile.jpg"}
               alt="Profile"
             />
           </div>
           <div>
-            <h2 className="text-3xl font-semibold text-gray-800">
+            <h2 className="text-3xl font-semibold text-[#b1a249]">
               {getUserData?.firstName} {getUserData?.lastName}
             </h2>
             <div className="mt-4 space-y-2">
-              <p className="text-gray-700">
+              <p className="text-black font-semibold">
                 Email:{" "}
-                <span className="text-indigo-600">{getUserData?.email}</span>
+                <span className="text-[#b1a249]">{getUserData?.email}</span>
               </p>
-              <p className="text-gray-700">
+              <p className="text-black font-semibold">
                 Phone:{" "}
-                <span className="text-indigo-600">
-                  {getUserData?.contactNo}
-                </span>
+                <span className="text-[#b1a249]">{getUserData?.contactNo}</span>
               </p>
-              <p className="text-gray-700">
+              <p className="text-black font-semibold">
                 Address:{" "}
-                <span className="text-indigo-600">{getUserData?.address}</span>
+                <span className="text-[#b1a249]">{getUserData?.address}</span>
               </p>
-              <p className="text-gray-700">
+              <p className="text-black font-semibold">
                 City:{" "}
-                <span className="text-indigo-600">{getUserData?.city}</span>
+                <span className="text-[#b1a249]">{getUserData?.city}</span>
               </p>
-              <p className="text-gray-700">
+              <p className="text-black font-semibold">
                 Date Of Birth:{" "}
-                <span className="text-indigo-600">
+                <span className="text-[#b1a249]">
                   {getUserData?.dateOfBirth.split("T")[0]}
                 </span>
               </p>
             </div>
           </div>
         </div>
+        <div className="flex gap-2.5 justify-end">
+          <button className="bg-[#b1a249] text-white py-2 px-4 rounded">
+            Edit Profile
+          </button>
+          <button className="bg-[#b1a249] text-white py-2 px-4 rounded">
+            Update Password
+          </button>
+          <button
+            className="bg-[#b1a249] text-white py-2 px-4 rounded"
+            onClick={handleLogout}
+          >
+            Logout
+          </button>
+        </div>
       </div>
 
       {/* Orders Section */}
-      <div className="bg-white p-6 rounded-lg shadow-md">
+      <div className="mt-5 bg-white p-6 rounded-lg shadow-lg">
         <h2 className="text-xl font-semibold mb-4">My Orders</h2>
         <div className="space-y-4">
           {orders.map((order) => (
@@ -125,7 +143,7 @@ export default function UserProfile() {
                 ) : (
                   <button
                     onClick={() => setSelectedOrderId(order.id)}
-                    className="text-blue-600 hover:text-blue-700"
+                    className="text-black hover:text-[#b1a249] cursor-pointer"
                   >
                     Upload Payment Screenshot
                   </button>
@@ -145,7 +163,7 @@ export default function UserProfile() {
                     />
                     <label
                       htmlFor={`file-upload-${order.id}`}
-                      className="flex items-center text-blue-600 cursor-pointer"
+                      className="flex items-center text-black cursor-pointer"
                     >
                       <Camera className="h-5 w-5 mr-2" />
                       Choose Screenshot

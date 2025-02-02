@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import {
   ShoppingCart,
-  Heart,
   Share2,
   Star,
   Truck,
@@ -10,11 +9,13 @@ import {
   ArrowLeft,
 } from "lucide-react";
 import toast from "react-hot-toast";
-import { Product } from "../../../types";
+import { Product, ReviewsData } from "../../../types";
 import { useProductHook } from "../hooks/productHook";
+import ReviewModal from "../../Modals/ReviewModal";
 
 export default function ProductDetail() {
-  const { getProductById, getFeaturedProducts } = useProductHook();
+  const { getProductById, getFeaturedProducts, postReview, getReviews } =
+    useProductHook();
   const { id } = useParams();
   const [quantity, setQuantity] = React.useState(1);
   const [selectedImage, setSelectedImage] = React.useState(0);
@@ -23,38 +24,65 @@ export default function ProductDetail() {
   );
   const [activeTab, setActiveTab] = useState("description");
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [reviewsData, setReviewsData] = useState<ReviewsData>([]);
 
   useEffect(() => {
     if (id) {
       getProductById(id, setPrductByIdData);
       getFeaturedProducts(id, setFeaturedProducts);
     }
-  }, []);
+  }, [id]);
   console.log(featuredProducts);
   const handleAddToCart = () => {
     toast.success(
       `Added ${quantity} ${quantity === 1 ? "item" : "items"} to cart`
     );
   };
+  const handleReviewTabClick = (productId: number | undefined) => {
+    if (productId !== undefined) {
+      getReviews(productId, setReviewsData);
+      setActiveTab("reviews");
+    } else {
+      console.error("Invalid product ID in handleReviewTabClick.");
+    }
+  };
 
-  const handleWishlist = () => {
-    toast.success("Added to wishlist");
+  console.log(reviewsData);
+  const handleReviewSubmit = (rating: number, reviewText: string) => {
+    const productId = id ? Number(id) : undefined;
+
+    if (!productId) {
+      toast.error("Invalid or missing Product ID.");
+      return;
+    }
+
+    postReview(productId, rating, reviewText);
+    toast.success("Review submitted successfully!");
   };
 
   const handleShare = () => {
     navigator.clipboard.writeText(window.location.href);
     toast.success("Link copied to clipboard");
   };
+  const openReviewModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeReviewModal = () => {
+    setIsModalOpen(false);
+  };
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <Link
         to="/shop"
-        className="inline-flex items-center text-blue-600 hover:text-blue-700 mb-6"
+        className="inline-flex items-center text-[#b1a249] hover:text-[#8a7d2a] mb-6 transition duration-200"
       >
         <ArrowLeft className="h-5 w-5 mr-2" />
         Back to Shop
       </Link>
+
       <div className="lg:grid lg:grid-cols-2 lg:gap-x-8">
         {/*Product Images  */}
         <div className="mb-8 lg:mb-0">
@@ -94,34 +122,102 @@ export default function ProductDetail() {
           <div className="mt-10">
             <div className="flex border-b">
               <button
-                className={`px-4 py-2 font-medium ${
+                className={`px-4 py-2 font-medium transition duration-200 ${
                   activeTab === "description"
-                    ? "border-b-2 border-blue-600 text-blue-600"
-                    : "text-gray-600"
+                    ? "border-b-2 border-[#b1a249] text-[#b1a249]"
+                    : "text-gray-600 hover:text-[#b1a249] focus:text-[#8a7d2a]"
                 }`}
                 onClick={() => setActiveTab("description")}
               >
                 Short Description
               </button>
+
               <button
-                className={`px-4 py-2 font-medium ${
+                className={`px-4 py-2 font-medium transition duration-200 ${
                   activeTab === "additional"
-                    ? "border-b-2 border-blue-600 text-blue-600"
-                    : "text-gray-600"
+                    ? "border-b-2 border-[#b1a249] text-[#b1a249]"
+                    : "text-gray-600 hover:text-[#b1a249] focus:text-[#8a7d2a]"
                 }`}
                 onClick={() => setActiveTab("additional")}
               >
                 Additional Information
               </button>
+
+              {/* New Reviews Button */}
+              <button
+                className={`px-4 py-2 font-medium transition duration-200 ${
+                  activeTab === "reviews"
+                    ? "border-b-2 border-[#b1a249] text-[#b1a249]"
+                    : "text-gray-600 hover:text-[#b1a249] focus:text-[#8a7d2a]"
+                }`}
+                onClick={() => {
+                  setActiveTab("reviews");
+                  const productId = id ? Number(id) : undefined;
+                  if (productId !== undefined) {
+                    handleReviewTabClick(productId);
+                  } else {
+                    console.error("Invalid product ID.");
+                  }
+                }}
+              >
+                Reviews
+              </button>
             </div>
+
             <div className="mt-4 text-gray-600">
               {activeTab === "description" && (
                 <p>{prductByIdData?.shortDescription}</p>
               )}
+
               {activeTab === "additional" && (
                 <ul className="list-disc list-inside space-y-2">
                   {prductByIdData?.addiotionalInformation}
                 </ul>
+              )}
+
+              {activeTab === "reviews" && (
+                <div>
+                  {reviewsData.length === 0 ? (
+                    <p>No reviews yet.</p>
+                  ) : (
+                    reviewsData.map((review) => (
+                      <div key={review.id} className="mb-4">
+                        <div className="flex items-center space-x-2">
+                          <h1 className="font-semibold text-lg">
+                            User Name: {review.user.firstName}{" "}
+                            {review.user.lastName}
+                          </h1>
+                        </div>
+
+                        <div className="mt-2">
+                          <span className="font-medium">Rating:</span>{" "}
+                          <div className="flex space-x-1">
+                            {/* Render the stars based on the rating */}
+                            {[1, 2, 3, 4, 5].map((star) => (
+                              <span
+                                key={star}
+                                className={`text-yellow-500 ${
+                                  review.rating >= star
+                                    ? "text-yellow-500"
+                                    : "text-gray-300"
+                                }`}
+                              >
+                                {review.rating >= star ? "★" : "☆"}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+
+                        <p className="mt-1">Review: {review.review}</p>
+
+                        <p className="mt-1 text-sm text-gray-500">
+                          Reviewed on:{" "}
+                          {new Date(review.createdAt).toLocaleDateString()}
+                        </p>
+                      </div>
+                    ))
+                  )}
+                </div>
               )}
             </div>
           </div>
@@ -192,17 +288,20 @@ export default function ProductDetail() {
           <div className="flex space-x-4 mb-8">
             <button
               onClick={handleAddToCart}
-              className="flex-1 bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 flex items-center justify-center"
+              className="flex-1 bg-[#f3ffc0] text-[#b1a249] font-semibold shadow-md px-6 py-3 rounded-md hover:bg-[#f3ffc0] hover:text-[#b1a249] focus:bg-[#e5ff8c] focus:text-[#8a7d2a] focus:font-semibold focus:shadow-lg flex items-center justify-center transition duration-200"
             >
               <ShoppingCart className="h-5 w-5 mr-2" />
               Add to Cart
             </button>
+
             <button
-              onClick={handleWishlist}
-              className="p-3 border border-gray-300 rounded-md hover:bg-gray-50"
+              onClick={openReviewModal}
+              className="p-3 border border-gray-300 rounded-md hover:bg-gray-50 flex items-center gap-2 cursor-pointer"
             >
-              <Heart className="h-5 w-5" />
+              <Star className="h-5 w-5 text-yellow-500" />
+              <span>Add Review</span>
             </button>
+
             <button
               onClick={handleShare}
               className="p-3 border border-gray-300 rounded-md hover:bg-gray-50"
@@ -267,7 +366,7 @@ export default function ProductDetail() {
                   </span>
                 </div>
                 <div className="mt-4">
-                  <button className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">
+                  <button className="bg-[#f3ffc0] text-[#b1a249] font-semibold shadow-md px-4 py-2 rounded-md hover:bg-[#f3ffc0] hover:text-[#b1a249] focus:bg-[#e5ff8c] focus:text-[#8a7d2a] focus:font-semibold focus:shadow-lg transition duration-200">
                     View Product
                   </button>
                 </div>
@@ -276,6 +375,11 @@ export default function ProductDetail() {
           </div>
         )}
       </div>
+      <ReviewModal
+        isOpen={isModalOpen}
+        closeModal={closeReviewModal}
+        handleReviewSubmit={handleReviewSubmit}
+      />
     </div>
   );
 }

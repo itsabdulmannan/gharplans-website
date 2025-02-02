@@ -44,9 +44,9 @@ export default function Navbar() {
             <Link to="/" className="flex items-center">
               <img
                 src="/src/assets/logo.png"
-                className="h-8 w-8 text-blue-600"
+                className="h-8 w-8 text-[#b1a249]"
               />
-              <span className="ml-2 text-xl font-bold text-gray-900">
+              <span className="ml-2 text-xl font-bold text-[#b1a249]">
                 GharPlans
               </span>
             </Link>
@@ -58,7 +58,7 @@ export default function Navbar() {
               <Link
                 key={link.path}
                 to={link.path}
-                className="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
+                className="text-[#b1a249] hover:text-[#8a7d2a] px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200"
               >
                 {link.name}
               </Link>
@@ -69,11 +69,14 @@ export default function Navbar() {
           <div className="flex items-center space-x-4">
             <button
               onClick={handleUserClick}
-              className="text-gray-600 hover:text-blue-600"
+              className="text-[#b1a249] hover:text-[#8a7d2a] transition duration-200"
             >
               <User className="h-6 w-6" />
             </button>
-            <Link to="/cart" className="text-gray-600 hover:text-blue-600">
+            <Link
+              to="/cart"
+              className="text-[#b1a249] hover:text-[#8a7d2a] transition duration-200"
+            >
               <ShoppingCart className="h-6 w-6" />
             </Link>
           </div>
@@ -82,7 +85,7 @@ export default function Navbar() {
           <div className="md:hidden flex items-center">
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500"
+              className="inline-flex items-center justify-center p-2 rounded-md text-[#b1a249] hover:text-[#8a7d2a] hover:bg-[#f3ffc0] focus:outline-none focus:ring-2 focus:ring-inset focus:ring-[#b1a249] transition duration-200"
             >
               {isOpen ? (
                 <X className="h-6 w-6" />
@@ -102,7 +105,7 @@ export default function Navbar() {
               <Link
                 key={link.path}
                 to={link.path}
-                className="text-gray-600 hover:text-blue-600 block px-3 py-2 rounded-md text-base font-medium"
+                className="text-[#b1a249] hover:text-[#8a7d2a] block px-3 py-2 rounded-md text-base font-medium transition duration-200"
                 onClick={() => setIsOpen(false)}
               >
                 {link.name}
@@ -110,7 +113,7 @@ export default function Navbar() {
             ))}
             <Link
               to="/login"
-              className="bg-blue-600 text-white block px-3 py-2 rounded-md text-base font-medium hover:bg-blue-700"
+              className="bg-[#f3ffc0] text-[#b1a249] block px-3 py-2 rounded-md text-base font-medium hover:bg-[#e5ff8c] hover:text-[#8a7d2a] transition duration-200"
               onClick={() => setIsOpen(false)}
             >
               Login

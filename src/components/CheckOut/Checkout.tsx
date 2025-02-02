@@ -89,7 +89,7 @@ export default function Checkout() {
             <Link
               to="/shop"
               onClick={() => toast.success("Order submitted successfully!")}
-              className="mt-6 w-full flex items-center justify-center px-6 py-3 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-blue-600 hover:bg-blue-700"
+              className="mt-6 w-full flex items-center justify-center px-6 py-3 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-[#b1a249] hover:bg-[#f3ffc0] hover:text-[#b1a249] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#b1a249] transition duration-200"
             >
               Submit Order
               <CreditCard className="ml-2 h-5 w-5" />
@@ -98,9 +98,10 @@ export default function Checkout() {
             <div className="mt-6 text-center">
               <Link
                 to="/cart"
-                className="text-sm font-medium text-blue-600 hover:text-blue-500 flex items-center justify-center"
+                className="text-sm font-medium text-[#b1a249] hover:text-[#8a7d2a] flex items-center justify-center transition duration-200"
               >
-                <ArrowLeft className="h-5 w-5 mr-1" /> Back to Cart
+                <ArrowLeft className="h-5 w-5 mr-1" />
+                Back to Cart
               </Link>
             </div>
           </div>

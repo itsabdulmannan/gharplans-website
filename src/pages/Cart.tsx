@@ -129,7 +129,7 @@ export default function Cart() {
                   </div>
                   <button
                     onClick={() => removeItem(item.id)}
-                    className="font-medium text-blue-600 hover:text-blue-500"
+                    className="font-medium text-[#b1a249] hover:text-[#8a7d2a] transition duration-200"
                   >
                     <X className="h-5 w-5" />
                   </button>
@@ -172,7 +172,7 @@ export default function Cart() {
 
             <Link
               to="/checkout"
-              className="mt-6 w-full flex items-center justify-center px-6 py-3 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-blue-600 hover:bg-blue-700"
+              className="mt-6 w-full flex items-center justify-center px-6 py-3 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-[#b1a249] hover:bg-[#f3ffc0] hover:text-[#b1a249] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#b1a249] transition duration-200"
             >
               Proceed to Checkout
               <ArrowRight className="ml-2 h-5 w-5" />
@@ -181,7 +181,7 @@ export default function Cart() {
             <div className="mt-6 text-center">
               <Link
                 to="/shop"
-                className="text-sm font-medium text-blue-600 hover:text-blue-500"
+                className="text-sm font-medium text-[#b1a249] hover:text-[#8a7d2a] transition duration-200"
               >
                 Continue Shopping
               </Link>
