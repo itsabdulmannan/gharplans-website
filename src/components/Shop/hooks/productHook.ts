@@ -4,11 +4,13 @@ export const useProductHook = () => {
   const getProduct = async (
     setProductData: Function,
     setLoading: Function,
-    categoryId?: string
+    categoryId?: string,
+    minPrice?: number,
+    maxPrice?: number
   ) => {
     try {
-      console.log(categoryId);
-      const response = await Apis.getProducts(categoryId);
+      console.log(minPrice, maxPrice);
+      const response = await Apis.getProducts(categoryId, minPrice, maxPrice);
       setProductData(response.data.products);
       setLoading(false);
     } catch (error) {

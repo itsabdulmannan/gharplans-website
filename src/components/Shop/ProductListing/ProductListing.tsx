@@ -6,23 +6,31 @@ import { useProductHook } from "../hooks/productHook";
 export default function ProductListing({
   searchQuery,
   selectedCategory,
+  selectedPrice,
   currentPage,
   setCurrentPage,
 }: {
   searchQuery: string;
   selectedCategory: string;
+  selectedPrice: string;
   currentPage: number;
   setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
 }) {
   const { getProduct } = useProductHook();
   const [productData, setProductData] = useState<Product[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  console.log(selectedCategory);
+  const [minPrice, maxPrice] = selectedPrice.split("-").map(Number);
+  console.log(minPrice, maxPrice);
 
   useEffect(() => {
-    getProduct(setProductData, setLoading, selectedCategory);
+    getProduct(
+      setProductData,
+      setLoading,
+      selectedCategory,
+      minPrice,
+      maxPrice
+    );
   }, [selectedCategory, currentPage]);
-
   const filteredProducts = productData.filter((product) =>
     product.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -59,7 +67,7 @@ export default function ProductListing({
           </Link>
         ))
       ) : (
-        <div>No products found for "{searchQuery}"</div>
+        <div>No Prodduct Found</div>
       )}
     </div>
   );

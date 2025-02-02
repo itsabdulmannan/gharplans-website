@@ -106,6 +106,7 @@ export default function Shop() {
           <ProductListing
             searchQuery={searchQuery}
             selectedCategory={selectedCategory}
+            selectedPrice={selectedPrice}
             currentPage={currentPage}
             setCurrentPage={setCurrentPage}
           />

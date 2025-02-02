@@ -21,8 +21,12 @@ export const Apis = {
     }),
 
   // Products
-  getProducts: (categoryId?: string ) =>
-    Request.get(`/product?categoryId=${categoryId}`),
+  getProducts: (categoryId?: string, minPrice?: number, maxPrice?: number) =>
+    Request.get(
+      `/product?${categoryId ? `categoryId=${categoryId}&` : ""}${
+        minPrice ? `minPrice=${minPrice}&` : ""
+      }${maxPrice ? `maxPrice=${maxPrice}` : ""}`.replace(/&$/, "")
+    ),
 
   // Category
   getCategory: () => Request.get("/category"),
