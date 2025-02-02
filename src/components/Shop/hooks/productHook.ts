@@ -28,6 +28,22 @@ export const useProductHook = () => {
       setLoading(false);
     } catch (error) {}
   };
-
-  return { getProduct, getCategory };
+  const getProductById = async (
+    productId: string,
+    setPrductByIdData: Function
+  ) => {
+    try {
+      const response = await Apis.getProductById(productId);
+      setPrductByIdData(response.data);
+      return response.data.product;
+    } catch (error) {}
+  };
+  const getFeaturedProducts = async (id:string, setFeaturedProducts: Function) => {
+    try {
+      const response = await Apis.getFeaturedProducts(id);
+      setFeaturedProducts(response.data.data);
+      return response.data.products;
+    } catch (error) {}
+  };
+  return { getProduct, getCategory, getProductById, getFeaturedProducts };
 };

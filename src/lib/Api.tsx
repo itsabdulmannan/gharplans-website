@@ -21,13 +21,22 @@ export const Apis = {
     }),
 
   // Products
-  getProducts: (categoryId?: string, minPrice?: number, maxPrice?: number) =>
+  getProducts: (
+    categoryId?: string,
+    minPrice?: number,
+    maxPrice?: number,
+    productId?: string
+  ) =>
     Request.get(
       `/product?${categoryId ? `categoryId=${categoryId}&` : ""}${
         minPrice ? `minPrice=${minPrice}&` : ""
-      }${maxPrice ? `maxPrice=${maxPrice}` : ""}`.replace(/&$/, "")
+      }${maxPrice ? `maxPrice=${maxPrice}` : ""}${
+        productId ? `&productId=${productId}` : ""
+      }`.replace(/&$/, "")
     ),
-
+  getProductById: (id: string) => Request.get(`/product?id=${id}`),
+  getFeaturedProducts: (id: string) =>
+    Request.get(`/product/similar-products/${id}`),
   // Category
   getCategory: () => Request.get("/category"),
 };

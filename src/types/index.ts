@@ -11,12 +11,20 @@ export interface Product {
   reviews?: number;
   stock?: number;
   colors: Color[];
+  options: Option[];
+  shortDescription: string;
+  addiotionalInformation: string;
+  similarProductId: string[];
 }
 
 export interface Color {
   id: string;
   name: string;
   image: string;
+  color: string;
+}
+export interface Option {
+  value: string;
 }
 
 export interface Category {

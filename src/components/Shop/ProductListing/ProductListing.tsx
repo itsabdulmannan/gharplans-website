@@ -67,7 +67,7 @@ export default function ProductListing({
           </Link>
         ))
       ) : (
-        <div>No Prodduct Found</div>
+        <div>No Product Found</div>
       )}
     </div>
   );
