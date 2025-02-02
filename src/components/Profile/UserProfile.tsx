@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Camera, FileText, CheckCircle } from "lucide-react";
 import toast from "react-hot-toast";
 import { useUSers } from "./useHook";
@@ -30,11 +30,6 @@ export default function UserProfile() {
   useEffect(() => {
     getUser(setUserData);
   }, []);
-
-  const handleProfileUpdate = (e: React.FormEvent) => {
-    e.preventDefault();
-    toast.success("Profile updated successfully!");
-  };
 
   const handleLogout = () => {
     toast.success("Logged out successfully!");
@@ -92,7 +87,7 @@ export default function UserProfile() {
               <p className="text-black font-semibold">
                 Date Of Birth:{" "}
                 <span className="text-[#b1a249]">
-                  {getUserData?.dateOfBirth.split("T")[0]}
+                  {getUserData?.dateOfBirth?.split("T")[0]}
                 </span>
               </p>
             </div>
