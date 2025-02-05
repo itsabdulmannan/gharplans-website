@@ -6,20 +6,19 @@ export const useProductHook = () => {
     setLoading: Function,
     categoryId?: string,
     minPrice?: number,
-    maxPrice?: number
+    maxPrice?: number,
+    offset: number = 0,
+    limit: number = 10
   ) => {
     try {
       setLoading(true);
-      let response;
-
-      if (categoryId) {
-        response = await Apis.getProducts(categoryId);
-      } else if (minPrice !== undefined && maxPrice !== undefined) {
-        response = await Apis.getProducts(undefined, minPrice, maxPrice);
-      } else {
-        response = await Apis.getProducts();
-      }
-
+      const response = await Apis.getProducts(
+        categoryId,
+        minPrice,
+        maxPrice,
+        offset,
+        limit
+      );
       setProductData(response.data.products);
     } catch (error) {
       console.error("Error fetching products:", error);

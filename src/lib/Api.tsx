@@ -25,15 +25,17 @@ export const Apis = {
     categoryId?: string,
     minPrice?: number,
     maxPrice?: number,
-    productId?: string
+    offset: number = 0,
+    limit: number = 10
   ) =>
     Request.get(
       `/product?${categoryId ? `categoryId=${categoryId}&` : ""}${
         minPrice ? `minPrice=${minPrice}&` : ""
-      }${maxPrice ? `maxPrice=${maxPrice}` : ""}${
-        productId ? `&productId=${productId}` : ""
-      }`.replace(/&$/, "")
+      }${
+        maxPrice ? `maxPrice=${maxPrice}&` : ""
+      }offset=${offset}&limit=${limit}`
     ),
+
   getProductById: (id: string) => Request.get(`/product?id=${id}`),
   getFeaturedProducts: (id: string) =>
     Request.get(`/product/similar-products/${id}`),

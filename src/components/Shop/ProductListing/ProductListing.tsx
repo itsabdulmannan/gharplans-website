@@ -8,7 +8,7 @@ export default function ProductListing({
   selectedCategory,
   selectedPrice,
   currentPage,
-  setCurrentPage,
+  // setCurrentPage,
 }: {
   searchQuery: string;
   selectedCategory: string;
@@ -19,13 +19,23 @@ export default function ProductListing({
   const { getProduct } = useProductHook();
   const [productData, setProductData] = useState<Product[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const limit = 10;
+  const offset = (currentPage - 1) * limit;
 
   const [minPrice, maxPrice] = selectedPrice
     ? selectedPrice.split("-").map(Number)
     : [undefined, undefined];
 
   useEffect(() => {
-    getProduct(setProductData, setLoading, selectedCategory, minPrice, maxPrice);
+    getProduct(
+      setProductData,
+      setLoading,
+      selectedCategory,
+      minPrice,
+      maxPrice,
+      offset,
+      limit
+    );
   }, [selectedCategory, selectedPrice, currentPage]);
 
   const filteredProducts = productData.filter((product) =>
@@ -33,39 +43,65 @@ export default function ProductListing({
   );
 
   return (
-    <div className="grid grid-cols-1 gap-y-10 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
-      {loading ? (
-        <div>Loading...</div>
-      ) : filteredProducts.length > 0 ? (
-        filteredProducts.map((productItem) => (
-          <Link
-            key={productItem.id}
-            to={`/shop/product/${productItem.id}`}
-            className="group"
+    <div>
+      <div className="grid grid-cols-1 gap-y-10 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
+        {loading ? (
+          <div>Loading...</div>
+        ) : filteredProducts.length > 0 ? (
+          filteredProducts.map((productItem) => (
+            <Link
+              key={productItem.id}
+              to={`/shop/product/${productItem.id}`}
+              className="group"
+            >
+              <div className="mb-4 bg-white rounded-lg shadow-md overflow-hidden transition-transform duration-300 hover:scale-105">
+                <div className="aspect-w-1 aspect-h-1 w-full overflow-hidden bg-gray-200 xl:aspect-w-7 xl:aspect-h-8">
+                  <img
+                    src={productItem.colors?.[0]?.image || "default-image-url"}
+                    alt={productItem.name}
+                    className="h-48 w-full object-cover object-center group-hover:opacity-75"
+                  />
+                </div>
+                <div className="p-4">
+                  <h3 className="text-sm text-gray-700">{productItem.name}</h3>
+                  <p className="mt-1 text-lg font-medium text-gray-900">
+                    ${productItem.price}
+                  </p>
+                  <span className="mt-1 text-sm text-gray-500">
+                    {productItem.category?.name || "Unknown Category"}
+                  </span>
+                </div>
+              </div>
+            </Link>
+          ))
+        ) : (
+          <div>No Product Found</div>
+        )}
+      </div>
+
+      {/* Pagination */}
+      {/* <div className="mt-8 flex justify-center">
+        <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px">
+          <button
+            onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+            disabled={currentPage === 1}
+            className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
           >
-            <div className="mb-4 bg-white rounded-lg shadow-md overflow-hidden transition-transform duration-300 hover:scale-105">
-              <div className="aspect-w-1 aspect-h-1 w-full overflow-hidden bg-gray-200 xl:aspect-w-7 xl:aspect-h-8">
-                <img
-                  src={productItem.colors?.[0]?.image || "default-image-url"}
-                  alt={productItem.name}
-                  className="h-48 w-full object-cover object-center group-hover:opacity-75"
-                />
-              </div>
-              <div className="p-4">
-                <h3 className="text-sm text-gray-700">{productItem.name}</h3>
-                <p className="mt-1 text-lg font-medium text-gray-900">
-                  ${productItem.price}
-                </p>
-                <span className="mt-1 text-sm text-gray-500">
-                  {productItem.category?.name || "Unknown Category"}
-                </span>
-              </div>
-            </div>
-          </Link>
-        ))
-      ) : (
-        <div>No Product Found</div>
-      )}
+            Previous
+          </button>
+          <button
+            onClick={() =>
+              setCurrentPage((p) =>
+                filteredProducts.length < limit ? p : p + 1
+              )
+            }
+            disabled={filteredProducts.length < limit}
+            className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+          >
+            Next
+          </button>
+        </nav>
+      </div> */}
     </div>
   );
 }
