@@ -42,8 +42,10 @@ export default function Shop() {
 
               {categoryData?.map((category: any) => (
                 <button
-                  key={category.id}
-                  onClick={() => setSelectedCategory(category.id)}
+                  onClick={() => {
+                    setSelectedCategory(category.id);
+                    setSelectedPrice(""); // Reset price when selecting a category
+                  }}
                   className={`w-full text-left px-3 py-2 rounded-md transition duration-200 ${
                     selectedCategory === category.id
                       ? "bg-[#f3ffc0] text-[#b1a249] font-semibold shadow-md"
@@ -60,18 +62,19 @@ export default function Shop() {
             <h3 className="text-lg font-semibold mb-4">Price Range</h3>
             <div className="space-y-2">
               {priceRanges.map(({ label, range }) => (
-               <button
-               key={range}
-               onClick={() => setSelectedPrice(range)}
-               className={`w-full text-left px-3 py-2 rounded-md transition duration-200 ${
-                 selectedPrice === range
-                   ? "bg-[#f3ffc0] text-[#b1a249] font-semibold shadow-md"
-                   : "text-gray-600 hover:bg-[#f3ffc0] hover:text-[#b1a249] focus:bg-[#e5ff8c] focus:text-[#8a7d2a] focus:font-semibold focus:shadow-lg"
-               }`}
-             >
-               {label}
-             </button>
-             
+                <button
+                  onClick={() => {
+                    setSelectedPrice(range);
+                    setSelectedCategory("");
+                  }}
+                  className={`w-full text-left px-3 py-2 rounded-md transition duration-200 ${
+                    selectedPrice === range
+                      ? "bg-[#f3ffc0] text-[#b1a249] font-semibold shadow-md"
+                      : "text-gray-600 hover:bg-[#f3ffc0] hover:text-[#b1a249] focus:bg-[#e5ff8c] focus:text-[#8a7d2a] focus:font-semibold focus:shadow-lg"
+                  }`}
+                >
+                  {label}
+                </button>
               ))}
             </div>
           </div>

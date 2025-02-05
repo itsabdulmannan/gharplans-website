@@ -11,6 +11,7 @@ import ResetPasswordForm from "../components/Auth/ResetPasswordForm";
 import UserProfile from "../components/Profile/UserProfile";
 import Checkout from "../components/CheckOut/Checkout";
 import ProtectedRoutes from "./protecredRoutes";
+import UnderConstruction from "../pages/UnderConstruction";
 
 export const router = createBrowserRouter([
   {
@@ -19,6 +20,7 @@ export const router = createBrowserRouter([
     children: [
       { path: "shop", element: <Shop /> },
       { path: "shop/product/:id", element: <ProductDetail /> },
+      { path: "product/:id", element: <ProductDetail /> },
       {
         path: "cart",
         element: <ProtectedRoutes element={<Cart />} />,
@@ -33,6 +35,7 @@ export const router = createBrowserRouter([
       { path: "forgot-password", element: <ForgotPasswordForm /> },
       { path: "verify-otp", element: <VerifyOTPForm /> },
       { path: "reset-password", element: <ResetPasswordForm /> },
+      { path: "*", element: <UnderConstruction /> },
     ],
   },
 ]);

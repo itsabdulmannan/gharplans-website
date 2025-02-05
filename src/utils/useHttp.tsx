@@ -6,7 +6,8 @@ import axios, {
 import Swal from "sweetalert2";
 
 export const Request = axios.create({
-  baseURL: "http://13.61.12.205",
+  baseURL: "http://localhost:3005",
+  // baseURL: "http://16.170.239.246",
 });
 
 const useHttp = () => {

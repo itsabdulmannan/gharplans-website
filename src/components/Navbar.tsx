@@ -1,5 +1,5 @@
 import React from "react";
-import { Link, useNavigate } from "react-router-dom"; // Use useNavigate instead of useHistory
+import { Link, useNavigate } from "react-router-dom";
 import { Menu, X, User, ShoppingCart } from "lucide-react";
 
 export default function Navbar() {
@@ -43,7 +43,7 @@ export default function Navbar() {
           <div className="flex items-center">
             <Link to="/" className="flex items-center">
               <img
-                src="/src/assets/logo.png"
+                src="/logo.png"
                 className="h-8 w-8 text-[#b1a249]"
               />
               <span className="ml-2 text-xl font-bold text-[#b1a249]">

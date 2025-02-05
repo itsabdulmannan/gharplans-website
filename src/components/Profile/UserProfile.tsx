@@ -1,35 +1,48 @@
 import { useEffect, useState } from "react";
-import { Camera, FileText, CheckCircle } from "lucide-react";
+import { Camera, FileText, CheckCircle, X } from "lucide-react";
 import toast from "react-hot-toast";
 import { useUSers } from "./useHook";
 import { UserDto } from "../../types/index";
 
-const mockOrders = [
-  {
-    id: "1",
-    date: "2025-01-01",
-    total: 299.99,
-    status: "Pending",
-    paymentScreenshot: null,
-  },
-  {
-    id: "2",
-    date: "2025-01-10",
-    total: 499.99,
-    status: "Completed",
-    paymentScreenshot: "https://via.placeholder.com/100",
-  },
-];
-
 export default function UserProfile() {
-  const { getUser } = useUSers();
-  const [orders, setOrders] = useState(mockOrders);
+  const { getUser, getOrder } = useUSers();
+  const [orders, setOrders] = useState<any>([]);
   const [selectedOrderId, setSelectedOrderId] = useState("");
   const [getUserData, setUserData] = useState<UserDto | null>(null);
+  const [isEditingProfile, setIsEditingProfile] = useState(false);
+  const [profileFormData, setProfileFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    contactNo: "",
+    address: "",
+    city: "",
+    dateOfBirth: "",
+  });
 
   useEffect(() => {
     getUser(setUserData);
   }, []);
+
+  useEffect(() => {
+    if (getUserData) {
+      getOrder(getUserData?.id, setOrders);
+    }
+  }, [getUserData]);
+
+  useEffect(() => {
+    if (getUserData) {
+      setProfileFormData({
+        firstName: getUserData.firstName || "",
+        lastName: getUserData.lastName || "",
+        email: getUserData.email || "",
+        contactNo: getUserData.contactNo || "",
+        address: getUserData.address || "",
+        city: getUserData.city || "",
+        dateOfBirth: getUserData.dateOfBirth?.split("T")[0] || "",
+      });
+    }
+  }, [getUserData]);
 
   const handleLogout = () => {
     toast.success("Logged out successfully!");
@@ -41,12 +54,32 @@ export default function UserProfile() {
     toast.success(
       `Payment screenshot for Order #${orderId} uploaded successfully.`
     );
-    const updatedOrders = orders.map((order) =>
+    const updatedOrders = orders.map((order: any) =>
       order.id === orderId
         ? { ...order, paymentScreenshot: URL.createObjectURL(file) }
         : order
     );
     setOrders(updatedOrders);
+  };
+
+  const handleProfileUpdate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const response = await fetch("/api/update-profile", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(profileFormData),
+      });
+      if (!response.ok) throw new Error("Failed to update profile");
+      const updatedUser = await response.json();
+      setUserData(updatedUser);
+      toast.success("Profile updated successfully!");
+      setIsEditingProfile(false);
+    } catch (error: any) {
+      toast.error(error.message);
+    }
   };
 
   return (
@@ -94,11 +127,11 @@ export default function UserProfile() {
           </div>
         </div>
         <div className="flex gap-2.5 justify-end">
-          <button className="bg-[#b1a249] text-white py-2 px-4 rounded">
+          <button
+            className="bg-[#b1a249] text-white py-2 px-4 rounded"
+            onClick={() => setIsEditingProfile(true)}
+          >
             Edit Profile
-          </button>
-          <button className="bg-[#b1a249] text-white py-2 px-4 rounded">
-            Update Password
           </button>
           <button
             className="bg-[#b1a249] text-white py-2 px-4 rounded"
@@ -113,7 +146,7 @@ export default function UserProfile() {
       <div className="mt-5 bg-white p-6 rounded-lg shadow-lg">
         <h2 className="text-xl font-semibold mb-4">My Orders</h2>
         <div className="space-y-4">
-          {orders.map((order) => (
+          {orders?.map((order: any) => (
             <div
               key={order.id}
               className="flex items-center justify-between border-b py-4"
@@ -122,10 +155,14 @@ export default function UserProfile() {
                 <FileText className="h-6 w-6 text-gray-600" />
                 <div>
                   <p className="font-semibold text-gray-800">
-                    Order #{order.id}
+                    Order #{order.orderId}
                   </p>
-                  <p className="text-sm text-gray-500">Date: {order.date}</p>
-                  <p className="text-sm text-gray-500">Total: ${order.total}</p>
+                  <p className="text-sm text-gray-500">
+                    Date: {order.createdAt.split("T")[0]}
+                  </p>
+                  <p className="text-sm text-gray-500">
+                    Total: ${order.totalAmount}
+                  </p>
                 </div>
               </div>
               <div className="flex items-center space-x-4">
@@ -176,6 +213,115 @@ export default function UserProfile() {
           ))}
         </div>
       </div>
+
+      {/* Edit Profile Modal */}
+      {isEditingProfile && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg shadow-lg p-8 w-full max-w-md relative">
+            <button
+              onClick={() => setIsEditingProfile(false)}
+              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+            >
+              <X className="h-6 w-6" />
+            </button>
+            <h2 className="text-2xl font-semibold text-[#b1a249] mb-6">
+              Edit Profile
+            </h2>
+            <form onSubmit={handleProfileUpdate} className="space-y-4">
+              <input
+                type="text"
+                value={profileFormData.firstName}
+                onChange={(e) =>
+                  setProfileFormData({
+                    ...profileFormData,
+                    firstName: e.target.value,
+                  })
+                }
+                placeholder="First Name"
+                className="w-full p-2 border rounded"
+              />
+              <input
+                type="text"
+                value={profileFormData.lastName}
+                onChange={(e) =>
+                  setProfileFormData({
+                    ...profileFormData,
+                    lastName: e.target.value,
+                  })
+                }
+                placeholder="Last Name"
+                className="w-full p-2 border rounded"
+              />
+              <input
+                type="email"
+                value={profileFormData.email}
+                onChange={(e) =>
+                  setProfileFormData({
+                    ...profileFormData,
+                    email: e.target.value,
+                  })
+                }
+                placeholder="Email"
+                className="w-full p-2 border rounded"
+              />
+              <input
+                type="text"
+                value={profileFormData.contactNo}
+                onChange={(e) =>
+                  setProfileFormData({
+                    ...profileFormData,
+                    contactNo: e.target.value,
+                  })
+                }
+                placeholder="Phone Number"
+                className="w-full p-2 border rounded"
+              />
+              <input
+                type="text"
+                value={profileFormData.address}
+                onChange={(e) =>
+                  setProfileFormData({
+                    ...profileFormData,
+                    address: e.target.value,
+                  })
+                }
+                placeholder="Address"
+                className="w-full p-2 border rounded"
+              />
+              <input
+                type="text"
+                value={profileFormData.city}
+                onChange={(e) =>
+                  setProfileFormData({
+                    ...profileFormData,
+                    city: e.target.value,
+                  })
+                }
+                placeholder="City"
+                className="w-full p-2 border rounded"
+              />
+              <input
+                type="date"
+                value={profileFormData.dateOfBirth}
+                onChange={(e) =>
+                  setProfileFormData({
+                    ...profileFormData,
+                    dateOfBirth: e.target.value,
+                  })
+                }
+                placeholder="Date of Birth"
+                className="w-full p-2 border rounded"
+              />
+              <button
+                type="submit"
+                className="bg-[#b1a249] text-white py-2 px-4 rounded w-full"
+              >
+                Save Changes
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

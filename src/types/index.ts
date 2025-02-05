@@ -32,6 +32,7 @@ export interface Category {
   name: string;
 }
 export interface UserDto {
+  id: number;
   firstName: string;
   lastName: string;
   email: string;

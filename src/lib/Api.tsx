@@ -62,4 +62,10 @@ export const Apis = {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
     }),
+  getOrder: (userId: number) =>
+    Request.get(`/orders?userId=${userId}`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    }),
 };

@@ -366,9 +366,11 @@ export default function ProductDetail() {
                   </span>
                 </div>
                 <div className="mt-4">
-                  <button className="bg-[#f3ffc0] text-[#b1a249] font-semibold shadow-md px-4 py-2 rounded-md hover:bg-[#f3ffc0] hover:text-[#b1a249] focus:bg-[#e5ff8c] focus:text-[#8a7d2a] focus:font-semibold focus:shadow-lg transition duration-200">
-                    View Product
-                  </button>
+                  <Link to={`/product/${product.similarProductId}`}>
+                    <button className="bg-[#f3ffc0] text-[#b1a249] font-semibold shadow-md px-4 py-2 rounded-md hover:bg-[#f3ffc0] hover:text-[#b1a249] focus:bg-[#e5ff8c] focus:text-[#8a7d2a] focus:font-semibold focus:shadow-lg transition duration-200 cursor-pointer">
+                      View Product{" "}
+                    </button>
+                  </Link>
                 </div>
               </div>
             ))}

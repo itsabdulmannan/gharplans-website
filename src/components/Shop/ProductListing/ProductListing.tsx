@@ -7,7 +7,8 @@ export default function ProductListing({
   searchQuery,
   selectedCategory,
   selectedPrice,
-  currentPage
+  currentPage,
+  setCurrentPage,
 }: {
   searchQuery: string;
   selectedCategory: string;
@@ -18,18 +19,15 @@ export default function ProductListing({
   const { getProduct } = useProductHook();
   const [productData, setProductData] = useState<Product[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [minPrice, maxPrice] = selectedPrice.split("-").map(Number);
-  console.log(minPrice, maxPrice);
+
+  const [minPrice, maxPrice] = selectedPrice
+    ? selectedPrice.split("-").map(Number)
+    : [undefined, undefined];
 
   useEffect(() => {
-    getProduct(
-      setProductData,
-      setLoading,
-      selectedCategory,
-      minPrice,
-      maxPrice
-    );
-  }, [selectedCategory, currentPage]);
+    getProduct(setProductData, setLoading, selectedCategory, minPrice, maxPrice);
+  }, [selectedCategory, selectedPrice, currentPage]);
+
   const filteredProducts = productData.filter((product) =>
     product.name.toLowerCase().includes(searchQuery.toLowerCase())
   );

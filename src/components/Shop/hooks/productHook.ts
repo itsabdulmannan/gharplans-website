@@ -9,15 +9,25 @@ export const useProductHook = () => {
     maxPrice?: number
   ) => {
     try {
-      console.log(minPrice, maxPrice);
-      const response = await Apis.getProducts(categoryId, minPrice, maxPrice);
+      setLoading(true);
+      let response;
+
+      if (categoryId) {
+        response = await Apis.getProducts(categoryId);
+      } else if (minPrice !== undefined && maxPrice !== undefined) {
+        response = await Apis.getProducts(undefined, minPrice, maxPrice);
+      } else {
+        response = await Apis.getProducts();
+      }
+
       setProductData(response.data.products);
-      setLoading(false);
     } catch (error) {
-      setLoading(false);
       console.error("Error fetching products:", error);
+    } finally {
+      setLoading(false);
     }
   };
+
   const getCategory = async (
     setCategoryData: Function,
     setLoading: Function

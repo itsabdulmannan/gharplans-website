@@ -10,5 +10,15 @@ export const useUSers = () => {
       return error;
     }
   };
-  return { getUser };
+  const getOrder = async (userId: number, setOrderData: Function) => {
+    try {
+      const response = await Apis.getOrder(userId);
+      setOrderData(response.data.ordersData);
+      return response.data.getOrder;
+    } catch (error) {
+      console.error(error);
+      return error;
+    }
+  };
+  return { getUser, getOrder };
 };
