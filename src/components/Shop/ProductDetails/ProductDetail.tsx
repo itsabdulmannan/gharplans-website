@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
+// import { AiOutlineSafety } from "react-icons/ai";
 import { useParams, Link } from "react-router-dom";
+import { RiCustomerService2Line } from "react-icons/ri";
 import {
   ShoppingCart,
   Share2,
@@ -12,6 +14,7 @@ import toast from "react-hot-toast";
 import { Product, ReviewsData } from "../../../types";
 import { useProductHook } from "../hooks/productHook";
 import ReviewModal from "../../Modals/ReviewModal";
+import { SiTicktick } from "react-icons/si";
 
 export default function ProductDetail() {
   const { getProductById, getFeaturedProducts, postReview, getReviews } =
@@ -97,26 +100,41 @@ export default function ProductDetail() {
             />
           </div>
           <div className="mt-4 grid grid-cols-4 gap-4">
-            {prductByIdData?.colors?.map((color, index) => (
-              <button
-                key={color.id}
-                onClick={() => setSelectedImage(index)}
-                className={`aspect-w-1 aspect-h-1 rounded-lg overflow-hidden p-2 text-center ${
-                  selectedImage === index
-                    ? "ring-2 ring-blue-500"
-                    : "ring-1 ring-gray-200"
-                }`}
-              >
-                <img
-                  src={color.image}
-                  alt={color.color}
-                  className="w-full h-20 object-cover object-center transition-transform duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg"
-                />
-                <span className="block mt-1 text-sm font-medium text-gray-900">
-                  {color.color}
-                </span>
-              </button>
-            ))}
+            {prductByIdData?.colors?.map((color, index) => {
+              const colorString = color.color;
+
+              const isValidColor = (str: string) => {
+                const s = new Option().style;
+                s.color = str;
+                return s.color !== "";
+              };
+
+              const buttonColor = isValidColor(colorString)
+                ? colorString
+                : "transparent";
+
+              return (
+                <button
+                  key={color.id}
+                  onClick={() => setSelectedImage(index)}
+                  className={`aspect-w-1 aspect-h-1 rounded-lg overflow-hidden p-2 text-center ${
+                    selectedImage === index
+                      ? "ring-2 ring-blue-500"
+                      : "ring-1 ring-gray-200"
+                  }`}
+                  style={{ backgroundColor: buttonColor }}
+                >
+                  <img
+                    src={color.image}
+                    alt={color.color}
+                    className="w-full h-20 object-cover object-center transition-transform duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg"
+                  />
+                  <span className="block mt-1 text-sm font-medium text-gray-900">
+                    {color.color}
+                  </span>
+                </button>
+              );
+            })}
           </div>
           {/* Tab Links For Short Description And Additioanl Information */}
           <div className="mt-10">
@@ -251,9 +269,26 @@ export default function ProductDetail() {
                 reviews)
               </span>
             </div>
+
+            {/* Discount Tier Prices */}
+            <div className="mb-4 grid grid-cols-2 gap-x-8 gap-y-4">
+              {prductByIdData?.discountTiers?.map((tier, index) => (
+                <div key={index} className="text-gray-600 text-left">
+                  <span className="block">{tier.range} pieces</span>
+                  <span className="block">-</span>
+                  <span className="block font-bold">
+                    ${parseFloat(tier.discountedPrice).toFixed(2)}
+                  </span>
+                </div>
+              ))}
+            </div>
+
+            {/* Sample price */}
             <p className="text-3xl font-bold text-gray-900 mb-4">
-              ${prductByIdData?.price}
+              Sample price: $
+              {parseFloat(prductByIdData?.price?.toString() || "0").toFixed(2)}
             </p>
+
             <p className="text-gray-600 mb-6">{prductByIdData?.description}</p>
           </div>
 
@@ -311,14 +346,25 @@ export default function ProductDetail() {
           </div>
 
           {/* Shipping & Warranty */}
-          <div className="border-t border-gray-200 pt-6 space-y-4">
-            <div className="flex items-center text-gray-600">
+          <div className="bg-white rounded-lg shadow-lg border-t border-gray-200 pt-6 space-y-4 p-5">
+            <div className="flex items-center text-gray-600 border-b border-gray-200 pb-4">
               <Truck className="h-5 w-5 mr-2" />
-              <span>Free shipping on orders over $500</span>
+              <span>Delivery Only In Karachi</span>
             </div>
-            <div className="flex items-center text-gray-600">
+            <div className="flex items-center text-gray-600 border-b border-gray-200 pb-4">
               <Shield className="h-5 w-5 mr-2" />
-              <span>2-year warranty included</span>
+              <span>Buyers Protection Guaranted</span>
+            </div>
+            <div className="flex items-center text-gray-600 border-b border-gray-200 pb-4">
+              <SiTicktick className="h-5 w-5 mr-2" />
+              <span>100% Genuinie Products</span>
+            </div>
+            <div className="flex items-center text-gray-600 border-b border-gray-200 pb-4">
+              <RiCustomerService2Line className="h-5 w-5 mr-2" />
+              <span>Cusotmer Service Contact</span>
+            </div>
+            <div className="flex items-center text-gray-600 border-b border-gray-200 pb-4">
+              <span className="ml-5">+92 321 1234567</span>
             </div>
           </div>
           {/* Options */}

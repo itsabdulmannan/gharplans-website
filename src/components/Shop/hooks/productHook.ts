@@ -81,6 +81,14 @@ export const useProductHook = () => {
       console.error("Error fetching reviews:", error);
     }
   };
+  const featuredProducts = async () => {
+    try {
+      const response = await Apis.getFeaturedProductsByCategory();
+      return response.data.products;
+    } catch (error) {
+      console.error("Error fetching featured products:", error);
+    }
+  };
   return {
     getProduct,
     getCategory,
@@ -88,5 +96,6 @@ export const useProductHook = () => {
     getFeaturedProducts,
     postReview,
     getReviews,
+    featuredProducts,
   };
 };

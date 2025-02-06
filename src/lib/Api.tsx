@@ -41,6 +41,8 @@ export const Apis = {
     Request.get(`/product/similar-products/${id}`),
   // Category
   getCategory: () => Request.get("/category"),
+  getFeaturedProductsByCategory: () =>
+    Request.get("/product/featured-products"),
   // User
   getUser: () =>
     Request.get("/user", {

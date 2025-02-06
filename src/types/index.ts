@@ -15,6 +15,8 @@ export interface Product {
   shortDescription: string;
   addiotionalInformation: string;
   similarProductId: string[];
+  hasDiscount?: boolean; // Add a field to indicate if the product has a discount
+  discountTiers?: DiscountTier[]; // Add a discountTiers array to represent the price ranges
 }
 
 export interface Color {
@@ -23,6 +25,7 @@ export interface Color {
   image: string;
   color: string;
 }
+
 export interface Option {
   value: string;
 }
@@ -31,6 +34,7 @@ export interface Category {
   id: string;
   name: string;
 }
+
 export interface UserDto {
   id: number;
   firstName: string;
@@ -67,4 +71,10 @@ export interface Review {
     };
   };
 }
+
 export type ReviewsData = Review[];
+
+export interface DiscountTier {
+  range: string; // e.g., "1-5", "6-10"
+  discountedPrice: string; // e.g., "671.40"
+}
