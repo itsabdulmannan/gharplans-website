@@ -2,7 +2,7 @@ import { createBrowserRouter } from "react-router-dom";
 import RootLayout from "../layouts/RootLayout";
 import Shop from "../components/Shop/Filters/Shop";
 import ProductDetail from "../components/Shop/ProductDetails/ProductDetail";
-import Cart from "../pages/Cart";
+import Cart from "../components/Shop/Cart/Cart";
 import LoginForm from "../components/Auth/LoginForm";
 import SignupForm from "../components/Auth/SignupForm";
 import ForgotPasswordForm from "../components/Auth/ForgotPasswordForm";
@@ -12,6 +12,7 @@ import UserProfile from "../components/Profile/UserProfile";
 import Checkout from "../components/CheckOut/Checkout";
 import ProtectedRoutes from "./protecredRoutes";
 import UnderConstruction from "../pages/UnderConstruction";
+import FavouriteProducts from "../components/Shop/Favourites/FavouriteProducts";
 
 export const router = createBrowserRouter([
   {
@@ -30,6 +31,10 @@ export const router = createBrowserRouter([
       {
         path: "profile",
         element: <ProtectedRoutes element={<UserProfile />} />,
+      },
+      {
+        path: "favourites",
+        element: <ProtectedRoutes element={<FavouriteProducts />} />,
       },
       { path: "login", element: <LoginForm /> },
       { path: "signup", element: <SignupForm /> },

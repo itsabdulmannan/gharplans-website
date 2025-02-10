@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { ArrowLeft, CreditCard } from "lucide-react";
 import toast from "react-hot-toast";
 import { useCart } from "./useHook";
@@ -7,10 +7,23 @@ import { useEffect, useState } from "react";
 export default function Checkout() {
   const { getBankAccountDetails } = useCart();
   const [bankAccountDetails, setBankAccountDetails] = useState<any>({});
+
+  // Retrieve the state passed from the Cart component
+  const location = useLocation();
+  const { subtotal, shipping, total } = location.state || {
+    subtotal: 0,
+    shipping: 0,
+    total: 0,
+  };
+
   useEffect(() => {
     getBankAccountDetails(setBankAccountDetails);
   }, []);
+
   console.log(bankAccountDetails);
+// const placeOrder = async () => {
+  
+// }
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <h1 className="text-3xl font-bold text-gray-900 mb-8">Checkout</h1>
@@ -68,11 +81,17 @@ export default function Checkout() {
             <div className="space-y-4">
               <div className="flex justify-between">
                 <span className="text-gray-600">Subtotal</span>
-                <span className="font-medium">$XXX.XX</span>
+                <span className="font-medium">
+                  ${Number(subtotal).toFixed(2)}
+                </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600">Shipping</span>
-                <span className="font-medium">$XX.XX</span>
+                <span className="font-medium">
+                  {Number(shipping) === 0
+                    ? "Free"
+                    : `$${Number(shipping).toFixed(2)}`}
+                </span>
               </div>
               <div className="border-t border-gray-200 pt-4">
                 <div className="flex justify-between">
@@ -80,7 +99,7 @@ export default function Checkout() {
                     Total
                   </span>
                   <span className="text-lg font-medium text-gray-900">
-                    $XXX.XX
+                    ${Number(total).toFixed(2)}
                   </span>
                 </div>
               </div>

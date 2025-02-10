@@ -1,34 +1,35 @@
-import React, { useEffect, useState } from "react";
-// import { AiOutlineSafety } from "react-icons/ai";
+import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { RiCustomerService2Line } from "react-icons/ri";
-import {
-  ShoppingCart,
-  Share2,
-  Star,
-  Truck,
-  Shield,
-  ArrowLeft,
-} from "lucide-react";
+import { MdFavoriteBorder } from "react-icons/md";
+import { ShoppingCart, Star, Truck, ArrowLeft } from "lucide-react";
 import toast from "react-hot-toast";
 import { Product, ReviewsData } from "../../../types";
 import { useProductHook } from "../hooks/productHook";
 import ReviewModal from "../../Modals/ReviewModal";
-import { SiTicktick } from "react-icons/si";
+import { RxDimensions } from "react-icons/rx";
+import { useNavigate } from "react-router-dom";
+import { GiWeightCrush } from "react-icons/gi";
 
 export default function ProductDetail() {
-  const { getProductById, getFeaturedProducts, postReview, getReviews } =
-    useProductHook();
+  const navigate = useNavigate();
+  const {
+    getProductById,
+    getFeaturedProducts,
+    postReview,
+    getReviews,
+    addToFavourite,
+    addToCart,
+  } = useProductHook();
   const { id } = useParams();
-  const [quantity, setQuantity] = React.useState(1);
-  const [selectedImage, setSelectedImage] = React.useState(0);
-  const [prductByIdData, setPrductByIdData] = React.useState<Product | null>(
-    null
-  );
+  const [quantity, setQuantity] = useState(1);
+  const [selectedImage, setSelectedImage] = useState(0);
+  const [prductByIdData, setPrductByIdData] = useState<Product | null>(null);
   const [activeTab, setActiveTab] = useState("description");
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [reviewsData, setReviewsData] = useState<ReviewsData>([]);
+  // New state to toggle full/short long description
+  const [showFullDescription, setShowFullDescription] = useState(false);
 
   useEffect(() => {
     if (id) {
@@ -36,12 +37,13 @@ export default function ProductDetail() {
       getFeaturedProducts(id, setFeaturedProducts);
     }
   }, [id]);
-  console.log(featuredProducts);
-  const handleAddToCart = () => {
-    toast.success(
-      `Added ${quantity} ${quantity === 1 ? "item" : "items"} to cart`
-    );
+
+  const handleAddToCart = (quantity: number, productId: number) => {
+    console.log(quantity, productId);
+    addToCart(quantity, productId);
+    toast.success(`Item Added to cart`);
   };
+
   const handleReviewTabClick = (productId: number | undefined) => {
     if (productId !== undefined) {
       getReviews(productId, setReviewsData);
@@ -51,8 +53,13 @@ export default function ProductDetail() {
     }
   };
 
-  console.log(reviewsData);
   const handleReviewSubmit = (rating: number, reviewText: string) => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      toast.error("You must be logged in to post a review.");
+      navigate("/login");
+      return;
+    }
     const productId = id ? Number(id) : undefined;
 
     if (!productId) {
@@ -64,11 +71,26 @@ export default function ProductDetail() {
     toast.success("Review submitted successfully!");
   };
 
-  const handleShare = () => {
+  const handleAddToFavourite = (productId: number) => {
+    console.log("Added to favourites", productId);
+    const token = localStorage.getItem("token");
+    if (!token) {
+      toast.error("You must be logged in to add to favourites.");
+      navigate("/login");
+      return;
+    }
+    addToFavourite(productId);
     navigator.clipboard.writeText(window.location.href);
-    toast.success("Link copied to clipboard");
+    toast.success("Product added to favourites!");
   };
+
   const openReviewModal = () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      toast.error("You must be logged in to post a review.");
+      navigate("/login");
+      return;
+    }
     setIsModalOpen(true);
   };
 
@@ -102,7 +124,6 @@ export default function ProductDetail() {
           <div className="mt-4 grid grid-cols-4 gap-4">
             {prductByIdData?.colors?.map((color, index) => {
               const colorString = color.color;
-
               const isValidColor = (str: string) => {
                 const s = new Option().style;
                 s.color = str;
@@ -136,7 +157,7 @@ export default function ProductDetail() {
               );
             })}
           </div>
-          {/* Tab Links For Short Description And Additioanl Information */}
+          {/* Tab Links For Short Description And Long Description */}
           <div className="mt-10">
             <div className="flex border-b">
               <button
@@ -158,10 +179,9 @@ export default function ProductDetail() {
                 }`}
                 onClick={() => setActiveTab("additional")}
               >
-                Additional Information
+                Long Description
               </button>
 
-              {/* New Reviews Button */}
               <button
                 className={`px-4 py-2 font-medium transition duration-200 ${
                   activeTab === "reviews"
@@ -188,9 +208,27 @@ export default function ProductDetail() {
               )}
 
               {activeTab === "additional" && (
-                <ul className="list-disc list-inside space-y-2">
-                  {prductByIdData?.addiotionalInformation}
-                </ul>
+                <div>
+                  <p className="text-justify">
+                    {showFullDescription
+                      ? prductByIdData?.description
+                      : prductByIdData?.description &&
+                        prductByIdData.description.length > 200
+                      ? prductByIdData.description.substring(0, 200) + "..."
+                      : prductByIdData?.description}
+                  </p>
+                  {prductByIdData?.description &&
+                    prductByIdData.description.length > 200 && (
+                      <button
+                        onClick={() =>
+                          setShowFullDescription(!showFullDescription)
+                        }
+                        className="mt-2 text-blue-500 underline"
+                      >
+                        {showFullDescription ? "Read Less" : "Read More"}
+                      </button>
+                    )}
+                </div>
               )}
 
               {activeTab === "reviews" && (
@@ -210,7 +248,6 @@ export default function ProductDetail() {
                         <div className="mt-2">
                           <span className="font-medium">Rating:</span>{" "}
                           <div className="flex space-x-1">
-                            {/* Render the stars based on the rating */}
                             {[1, 2, 3, 4, 5].map((star) => (
                               <span
                                 key={star}
@@ -242,7 +279,6 @@ export default function ProductDetail() {
         </div>
         <div className="lg:pl-8">
           {/* Product Info */}
-
           <div className="mb-6">
             <h1 className="text-3xl font-bold text-gray-900 mb-2">
               {prductByIdData?.name}
@@ -270,26 +306,52 @@ export default function ProductDetail() {
               </span>
             </div>
 
-            {/* Discount Tier Prices */}
-            <div className="mb-4 grid grid-cols-2 gap-x-8 gap-y-4">
-              {prductByIdData?.discountTiers?.map((tier, index) => (
-                <div key={index} className="text-gray-600 text-left">
-                  <span className="block">{tier.range} pieces</span>
-                  <span className="block">-</span>
-                  <span className="block font-bold">
-                    ${parseFloat(tier.discountedPrice).toFixed(2)}
-                  </span>
-                </div>
-              ))}
-            </div>
-
             {/* Sample price */}
             <p className="text-3xl font-bold text-gray-900 mb-4">
-              Sample price: $
+              Price: $
               {parseFloat(prductByIdData?.price?.toString() || "0").toFixed(2)}
             </p>
-
-            <p className="text-gray-600 mb-6">{prductByIdData?.description}</p>
+            {/* Discount Tier Prices */}
+            <div className="mb-4 grid grid-cols-2 gap-x-8 gap-y-4">
+              {prductByIdData?.discountTiers?.[0]?.discountedPrice ? (
+                <p className="col-span-2 text-gray-600">No discount pieces</p>
+              ) : (
+                prductByIdData?.discountTiers?.map((tier, index) => (
+                  <div key={index} className="text-gray-600 text-left">
+                    <span className="block">{tier.range} pieces</span>
+                    <span className="block">-</span>
+                    <span className="block font-bold">
+                      ${parseFloat(tier.discountedPrice).toFixed(2)}
+                    </span>
+                  </div>
+                ))
+              )}
+            </div>
+            <div className="bg-white rounded-lg shadow-lg border-t border-gray-200 pt-6 space-y-4 p-3">
+              <div className="flex items-center text-gray-600 border-b border-gray-200 pb-4">
+                <Truck className="h-5 w-5 mr-2" />
+                <span>
+                  Free Shipping in{" "}
+                  {prductByIdData?.deliveryCharges &&
+                  Array.isArray(prductByIdData.deliveryCharges) &&
+                  prductByIdData.deliveryCharges.length > 0
+                    ? prductByIdData.deliveryCharges
+                        .map(
+                          (charge) => charge?.destinationCity?.name ?? "Lahore"
+                        )
+                        .join(", ")
+                    : "Lahore"}
+                </span>
+              </div>
+              <div className="flex items-center text-gray-600 border-b border-gray-200 pb-4">
+                <RxDimensions className="h-5 w-5 mr-2" />
+                <span>Dimension</span>
+              </div>
+              <div className="flex items-center text-gray-600 border-b border-gray-200 pb-4">
+                <GiWeightCrush className="h-5 w-5 mr-2" />
+                <span>Weight {prductByIdData?.weight}</span>
+              </div>
+            </div>
           </div>
 
           {/* Quantity Selector */}
@@ -322,8 +384,10 @@ export default function ProductDetail() {
           {/* Action Buttons */}
           <div className="flex space-x-4 mb-8">
             <button
-              onClick={handleAddToCart}
-              className="flex-1 bg-[#f3ffc0] text-[#b1a249] font-semibold shadow-md px-6 py-3 rounded-md hover:bg-[#f3ffc0] hover:text-[#b1a249] focus:bg-[#e5ff8c] focus:text-[#8a7d2a] focus:font-semibold focus:shadow-lg flex items-center justify-center transition duration-200"
+              onClick={() =>
+                handleAddToCart(quantity, Number(prductByIdData?.id) || 0)
+              }
+              className="cursor-pointer flex-1 bg-[#f3ffc0] text-[#b1a249] font-semibold shadow-md px-6 py-3 rounded-md hover:bg-[#f3ffc0] hover:text-[#b1a249] focus:bg-[#e5ff8c] focus:text-[#8a7d2a] focus:font-semibold focus:shadow-lg flex items-center justify-center transition duration-200"
             >
               <ShoppingCart className="h-5 w-5 mr-2" />
               Add to Cart
@@ -338,48 +402,18 @@ export default function ProductDetail() {
             </button>
 
             <button
-              onClick={handleShare}
-              className="p-3 border border-gray-300 rounded-md hover:bg-gray-50"
+              onClick={() =>
+                handleAddToFavourite(Number(prductByIdData?.id) || 0)
+              }
+              className="p-3 border border-gray-300 rounded-md hover:bg-gray-50 cursor-pointer"
             >
-              <Share2 className="h-5 w-5" />
+              <MdFavoriteBorder className="h-5 w-5" />
             </button>
-          </div>
-
-          {/* Shipping & Warranty */}
-          <div className="bg-white rounded-lg shadow-lg border-t border-gray-200 pt-6 space-y-4 p-5">
-            <div className="flex items-center text-gray-600 border-b border-gray-200 pb-4">
-              <Truck className="h-5 w-5 mr-2" />
-              <span>Delivery Only In Karachi</span>
-            </div>
-            <div className="flex items-center text-gray-600 border-b border-gray-200 pb-4">
-              <Shield className="h-5 w-5 mr-2" />
-              <span>Buyers Protection Guaranted</span>
-            </div>
-            <div className="flex items-center text-gray-600 border-b border-gray-200 pb-4">
-              <SiTicktick className="h-5 w-5 mr-2" />
-              <span>100% Genuinie Products</span>
-            </div>
-            <div className="flex items-center text-gray-600 border-b border-gray-200 pb-4">
-              <RiCustomerService2Line className="h-5 w-5 mr-2" />
-              <span>Cusotmer Service Contact</span>
-            </div>
-            <div className="flex items-center text-gray-600 border-b border-gray-200 pb-4">
-              <span className="ml-5">+92 321 1234567</span>
-            </div>
-          </div>
-          {/* Options */}
-          <div className="mt-8">
-            <h2 className="text-lg font-semibold mb-4">Options</h2>
-            <ul className="list-disc list-inside space-y-2 text-gray-600">
-              {prductByIdData?.options?.map((spec, index) => (
-                <li key={index}>
-                  {typeof spec === "string" ? spec : spec?.value}
-                </li>
-              ))}
-            </ul>
           </div>
         </div>
       </div>
+
+      {/* Featured Products */}
       <div className="mt-12">
         <h2 className="text-lg font-semibold mb-4">Featured Products</h2>
         {featuredProducts?.length === 0 ? (
@@ -423,6 +457,8 @@ export default function ProductDetail() {
           </div>
         )}
       </div>
+
+      {/* Review Modal */}
       <ReviewModal
         isOpen={isModalOpen}
         closeModal={closeReviewModal}

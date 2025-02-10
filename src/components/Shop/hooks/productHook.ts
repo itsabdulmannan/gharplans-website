@@ -26,7 +26,14 @@ export const useProductHook = () => {
       setLoading(false);
     }
   };
-
+  const addToFavourite = async (productId: number) => {
+    try {
+      const response = await Apis.addToFavourite(productId);
+      return response.data;
+    } catch (error) {
+      console.error("Error adding to favourite:", error);
+    }
+  };
   const getCategory = async (
     setCategoryData: Function,
     setLoading: Function
@@ -89,6 +96,19 @@ export const useProductHook = () => {
       console.error("Error fetching featured products:", error);
     }
   };
+  const addToCart = async (quantity: number, productId: number) => {
+    try {
+      const body = {
+        quantity: quantity,
+        productId: productId,
+      };
+      console.log(body);
+      const respsone = await Apis.addToCart(body);
+      return respsone.data;
+    } catch (error) {
+      console.error("Error adding to cart:", error);
+    }
+  };
   return {
     getProduct,
     getCategory,
@@ -97,5 +117,7 @@ export const useProductHook = () => {
     postReview,
     getReviews,
     featuredProducts,
+    addToFavourite,
+    addToCart,
   };
 };

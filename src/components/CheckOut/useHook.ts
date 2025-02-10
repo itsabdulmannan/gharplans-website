@@ -11,6 +11,15 @@ export const useCart = () => {
       return error;
     }
   };
+  const createOrder = async (body: any): Promise<any> => {
+    try {
+      const response = await Apis.createOrder(body);
+      return response.data;
+    } catch (error: any) {
+      console.error("Error fetching cart:", error.message);
+      throw error;
+    }
+  };
 
-  return { getBankAccountDetails };
+  return { getBankAccountDetails, createOrder };
 };

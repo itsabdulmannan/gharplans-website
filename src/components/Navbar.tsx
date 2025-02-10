@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Menu, X, User, ShoppingCart } from "lucide-react";
+import { Menu, X, User, ShoppingCart, Heart } from "lucide-react";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = React.useState(false);
@@ -40,13 +40,15 @@ export default function Navbar() {
     <nav className="bg-white shadow-lg">
       <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
+          {/* Logo */}
           <div className="flex items-center">
             <Link to="/" className="flex items-center">
               <img
                 src="/logo.png"
-                className="h-8 w-8 text-[#b1a249]"
+                className="h-8 w-8"
+                alt="Logo"
               />
-              <span className="ml-2 text-xl font-bold text-[#b1a249]">
+              <span className="ml-2 text-xl font-bold text-[#792099]">
                 GharPlans
               </span>
             </Link>
@@ -58,34 +60,45 @@ export default function Navbar() {
               <Link
                 key={link.path}
                 to={link.path}
-                className="text-[#b1a249] hover:text-[#8a7d2a] px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200"
+                className="text-[#792099] hover:text-[#792099] px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200"
               >
                 {link.name}
               </Link>
             ))}
           </div>
 
-          {/* Right icons (Profile and Cart) */}
+          {/* Right Icons (User, Favorites, Cart) */}
           <div className="flex items-center space-x-4">
+            {/* User/Profile */}
             <button
               onClick={handleUserClick}
-              className="text-[#b1a249] hover:text-[#8a7d2a] transition duration-200"
+              className="text-[#792099] hover:text-[#792099] transition duration-200 cursor-pointer"
             >
               <User className="h-6 w-6" />
             </button>
+
+            {/* Favorites */}
+            <Link
+              to="/favourites"
+              className="text-[#792099] hover:text-[#792099] transition duration-200"
+            >
+              <Heart className="h-6 w-6" />
+            </Link>
+
+            {/* Cart */}
             <Link
               to="/cart"
-              className="text-[#b1a249] hover:text-[#8a7d2a] transition duration-200"
+              className="text-[#792099] hover:text-[#792099] transition duration-200"
             >
               <ShoppingCart className="h-6 w-6" />
             </Link>
           </div>
 
-          {/* Mobile menu button */}
+          {/* Mobile Menu Button */}
           <div className="md:hidden flex items-center">
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="inline-flex items-center justify-center p-2 rounded-md text-[#b1a249] hover:text-[#8a7d2a] hover:bg-[#f3ffc0] focus:outline-none focus:ring-2 focus:ring-inset focus:ring-[#b1a249] transition duration-200"
+              className="inline-flex items-center justify-center p-2 rounded-md text-[#792099] hover:text-[#792099] hover:bg-[#f3ffc0] focus:outline-none focus:ring-2 focus:ring-inset focus:ring-[#792099] transition duration-200"
             >
               {isOpen ? (
                 <X className="h-6 w-6" />
@@ -105,15 +118,26 @@ export default function Navbar() {
               <Link
                 key={link.path}
                 to={link.path}
-                className="text-[#b1a249] hover:text-[#8a7d2a] block px-3 py-2 rounded-md text-base font-medium transition duration-200"
+                className="text-[#792099] hover:text-[#792099] block px-3 py-2 rounded-md text-base font-medium transition duration-200"
                 onClick={() => setIsOpen(false)}
               >
                 {link.name}
               </Link>
             ))}
+
+            {/* Favorites link in mobile menu */}
+            <Link
+              to="/favourites"
+              className="text-[#792099] hover:text-[#792099] block px-3 py-2 rounded-md text-base font-medium transition duration-200"
+              onClick={() => setIsOpen(false)}
+            >
+              Favorites
+            </Link>
+
+            {/* Login in mobile menu */}
             <Link
               to="/login"
-              className="bg-[#f3ffc0] text-[#b1a249] block px-3 py-2 rounded-md text-base font-medium hover:bg-[#e5ff8c] hover:text-[#8a7d2a] transition duration-200"
+              className="bg-[#f3ffc0] text-[#792099] block px-3 py-2 rounded-md text-base font-medium hover:bg-[#e5ff8c] hover:text-[#792099] transition duration-200"
               onClick={() => setIsOpen(false)}
             >
               Login

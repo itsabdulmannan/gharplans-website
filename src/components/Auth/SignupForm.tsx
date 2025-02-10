@@ -25,11 +25,11 @@ export default function SignupForm() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      setFormData({ ...formData, profileImage: e.target.files[0] });
-    }
-  };
+  // const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   if (e.target.files) {
+  //     setFormData({ ...formData, profileImage: e.target.files[0] });
+  //   }
+  // };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -293,6 +293,8 @@ export default function SignupForm() {
                 </div>
               </div>
 
+              {/*
+              The Profile Image section is commented out for now.
               <div>
                 <label
                   htmlFor="profileImage"
@@ -310,6 +312,7 @@ export default function SignupForm() {
                   />
                 </div>
               </div>
+              */}
             </div>
 
             <div>

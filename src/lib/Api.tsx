@@ -35,7 +35,16 @@ export const Apis = {
         maxPrice ? `maxPrice=${maxPrice}&` : ""
       }offset=${offset}&limit=${limit}`
     ),
-
+  addToFavourite: (productId: number) =>
+    Request.post(
+      `/favourites/add`,
+      { productId },
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+    ),
   getProductById: (id: string) => Request.get(`/product?id=${id}`),
   getFeaturedProducts: (id: string) =>
     Request.get(`/product/similar-products/${id}`),
@@ -72,4 +81,27 @@ export const Apis = {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
     }),
+  // Favourite Products
+  getFavouriteProducts: () =>
+    Request.get(`/favourites/`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    }),
+  removeFavouriteProduct: (ProductId: number) =>
+    Request.delete(`/favourites/remove`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+      data: {
+        ProductId,
+      },
+    }),
+  addToCart: (body: any) => Request.post("/cart/add", body),
+  getCart: () => Request.get("/cart/items"),
+  removeFromCart: (productId: number) =>
+    Request.delete(`/cart/delete`, { data: { productId } }),
+  updateQuantity: (id: number, quantity: number, productId: number) =>
+    Request.put(`/cart/update`, { id, quantity, productId }),
+  createOrder: (body: any) => Request.post("/orders", body),
 };

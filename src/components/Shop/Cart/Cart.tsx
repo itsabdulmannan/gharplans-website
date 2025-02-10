@@ -1,56 +1,56 @@
-import React from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Minus, Plus, X, ShoppingBag, ArrowRight } from "lucide-react";
 import toast from "react-hot-toast";
-
-interface CartItem {
-  id: string;
-  name: string;
-  price: number;
-  image: string;
-  quantity: number;
-}
-
-// Mock cart data - replace with actual state management
-const initialCartItems: CartItem[] = [
-  {
-    id: "1",
-    name: "Premium Construction Toolkit",
-    price: 299.99,
-    image: "https://source.unsplash.com/featured/400x300/?construction,tools",
-    quantity: 1,
-  },
-  {
-    id: "2",
-    name: "Safety Helmet Pro",
-    price: 89.99,
-    image: "https://source.unsplash.com/featured/400x300/?safety,helmet",
-    quantity: 2,
-  },
-];
+import { useCart } from "./useHook";
+import { CartItem } from "../../../types";
 
 export default function Cart() {
-  const [cartItems, setCartItems] =
-    React.useState<CartItem[]>(initialCartItems);
+  const { getCart, removerCart, updateCart } = useCart();
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
 
-  const updateQuantity = (id: string, newQuantity: number) => {
+  useEffect(() => {
+    getCart(setCartItems);
+  }, []);
+
+  const updateQuantity = async (
+    id: string,
+    newQuantity: number,
+    productId: number
+  ) => {
     if (newQuantity < 1) return;
-    setCartItems((items) =>
-      items.map((item) =>
-        item.id === id ? { ...item, quantity: newQuantity } : item
-      )
-    );
+    try {
+      await updateCart(Number(id), newQuantity, productId);
+      setCartItems((items) =>
+        items.map((item) =>
+          item.id === id ? { ...item, quantity: newQuantity } : item
+        )
+      );
+      toast.success("Quantity updated");
+    } catch (error) {
+      toast.error("Error updating cart item");
+      console.error("Error in updateQuantity:", error);
+    }
   };
 
-  const removeItem = (id: string) => {
-    setCartItems((items) => items.filter((item) => item.id !== id));
-    toast.success("Item removed from cart");
+  const removeItem = async (id: number) => {
+    try {
+      await removerCart(id);
+      setCartItems((prevItems) =>
+        prevItems.filter((item) => Number(item.id) !== id)
+      );
+      toast.success("Item removed from cart");
+    } catch (error) {
+      toast.error("Error removing item from cart");
+      console.error("Error in removeItem:", error);
+    }
   };
 
-  const subtotal = cartItems.reduce(
-    (sum, item) => sum + item.price * item.quantity,
-    0
-  );
+  // Calculate the subtotal by summing each item's itemTotal (converted to a number)
+  const subtotal = Array.isArray(cartItems)
+    ? cartItems.reduce((sum, item) => sum + Number(item.itemTotal), 0)
+    : 0;
+
   const shipping = subtotal > 500 ? 0 : 50;
   const total = subtotal + shipping;
 
@@ -81,7 +81,6 @@ export default function Cart() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <h1 className="text-3xl font-bold text-gray-900 mb-8">Shopping Cart</h1>
-
       <div className="lg:grid lg:grid-cols-12 lg:gap-x-12 lg:items-start">
         <div className="lg:col-span-7">
           {cartItems.map((item) => (
@@ -91,7 +90,7 @@ export default function Cart() {
             >
               <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
                 <img
-                  src={item.image}
+                  src={item?.product?.colors[0].image}
                   alt={item.name}
                   className="h-full w-full object-cover object-center"
                 />
@@ -101,35 +100,49 @@ export default function Cart() {
                 <div>
                   <div className="flex justify-between text-base font-medium text-gray-900">
                     <h3>
-                      <Link to={`/shop/product/${item.id}`}>{item.name}</Link>
+                      <Link to={`/shop/product/${item.id}`}>
+                        {item?.product?.name}
+                      </Link>
                     </h3>
-                    <p className="ml-4">
-                      ${(item.price * item.quantity).toFixed(2)}
-                    </p>
+                    <p className="ml-4">${item?.itemTotal}</p>
                   </div>
                   <p className="mt-1 text-sm text-gray-500">
-                    ${item.price.toFixed(2)} each
+                    ${item?.product?.singleProductPrice} each
                   </p>
                 </div>
                 <div className="flex flex-1 items-end justify-between text-sm">
                   <div className="flex items-center space-x-2">
                     <button
-                      onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                      onClick={() =>
+                        updateQuantity(
+                          item.id,
+                          item.quantity - 1,
+                          Number(item?.product?.id)
+                        )
+                      }
                       className="p-1 rounded-md hover:bg-gray-100"
                     >
                       <Minus className="h-4 w-4" />
                     </button>
-                    <span className="font-medium">{item.quantity}</span>
+                    <span className="font-medium text-gray-900 text-lg p-1">
+                      {item.quantity}
+                    </span>
                     <button
-                      onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                      className="p-1 rounded-md hover:bg-gray-100"
+                      onClick={() =>
+                        updateQuantity(
+                          item.id,
+                          item.quantity + 1,
+                          Number(item?.product?.id)
+                        )
+                      }
+                      className="p-1 rounded-md hover:bg-gray-100 cursor-pointer"
                     >
                       <Plus className="h-4 w-4" />
                     </button>
                   </div>
                   <button
-                    onClick={() => removeItem(item.id)}
-                    className="font-medium text-[#b1a249] hover:text-[#8a7d2a] transition duration-200"
+                    onClick={() => removeItem(Number(item.id))}
+                    className="font-medium text-[#b1a249] hover:text-[#8a7d2a] transition duration-200 cursor-pointer"
                   >
                     <X className="h-5 w-5" />
                   </button>
@@ -138,12 +151,12 @@ export default function Cart() {
             </div>
           ))}
         </div>
-
         <div className="mt-8 lg:mt-0 lg:col-span-5">
           <div className="bg-white rounded-lg shadow-md p-6">
             <h2 className="text-lg font-medium text-gray-900 mb-6">
               Order Summary
             </h2>
+
             <div className="space-y-4">
               <div className="flex justify-between">
                 <span className="text-gray-600">Subtotal</span>
@@ -170,8 +183,10 @@ export default function Cart() {
               </div>
             </div>
 
+            {/* Pass the calculated values via state */}
             <Link
               to="/checkout"
+              state={{ subtotal, shipping, total }}
               className="mt-6 w-full flex items-center justify-center px-6 py-3 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-[#b1a249] hover:bg-[#f3ffc0] hover:text-[#b1a249] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#b1a249] transition duration-200"
             >
               Proceed to Checkout

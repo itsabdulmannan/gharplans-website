@@ -5,7 +5,7 @@ import { FaYoutube } from "react-icons/fa";
 
 function Footer() {
   return (
-    <div className="bg-[#8a7d2a]">
+    <div className="bg-[#792099] w-full">
       <div className="py-8 px-4 sm:px-6 lg:px-8 flex justify-between items-center max-w-screen-xl mx-auto">
         <span className="text-white">
           © +92 315 5111119, 339 5111 199 (Shop) | info@gharplans.pk
@@ -23,7 +23,7 @@ function Footer() {
             target="_blank"
             rel="noopener noreferrer"
           >
-            <FaPinterest /> {/* You can change this to a Twitter icon */}
+            <FaPinterest /> {/* Replace with a Twitter icon if desired */}
           </a>
           <a
             href="https://www.instagram.com/gp_designandconstruction/"
