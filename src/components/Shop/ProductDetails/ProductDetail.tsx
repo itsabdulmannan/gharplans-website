@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { MdFavoriteBorder } from "react-icons/md";
 import { ShoppingCart, Star, Truck, ArrowLeft } from "lucide-react";
+import { GiWeightCrush } from "react-icons/gi";
+import { RxDimensions } from "react-icons/rx";
 import toast from "react-hot-toast";
+
 import { Product, ReviewsData } from "../../../types";
 import { useProductHook } from "../hooks/productHook";
 import ReviewModal from "../../Modals/ReviewModal";
-import { RxDimensions } from "react-icons/rx";
-import { useNavigate } from "react-router-dom";
-import { GiWeightCrush } from "react-icons/gi";
 
 export default function ProductDetail() {
   const navigate = useNavigate();
@@ -20,16 +20,23 @@ export default function ProductDetail() {
     addToFavourite,
     addToCart,
   } = useProductHook();
+
   const { id } = useParams();
+
   const [quantity, setQuantity] = useState(1);
-  const [selectedImage, setSelectedImage] = useState(0);
   const [prductByIdData, setPrductByIdData] = useState<Product | null>(null);
+
+  // Tabs: "description", "additional", "reviews"
   const [activeTab, setActiveTab] = useState("description");
+
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [reviewsData, setReviewsData] = useState<ReviewsData>([]);
-  // New state to toggle full/short long description
   const [showFullDescription, setShowFullDescription] = useState(false);
+
+  // Track which color is selected, and which image within that color is selected
+  const [selectedColorIndex, setSelectedColorIndex] = useState(0);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
   useEffect(() => {
     if (id) {
@@ -38,12 +45,13 @@ export default function ProductDetail() {
     }
   }, [id]);
 
+  // Handle cart addition
   const handleAddToCart = (quantity: number, productId: number) => {
-    console.log(quantity, productId);
     addToCart(quantity, productId);
     toast.success(`Item Added to cart`);
   };
 
+  // Handle switching to "reviews" tab and loading them
   const handleReviewTabClick = (productId: number | undefined) => {
     if (productId !== undefined) {
       getReviews(productId, setReviewsData);
@@ -53,6 +61,7 @@ export default function ProductDetail() {
     }
   };
 
+  // Submit a review
   const handleReviewSubmit = (rating: number, reviewText: string) => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -61,7 +70,6 @@ export default function ProductDetail() {
       return;
     }
     const productId = id ? Number(id) : undefined;
-
     if (!productId) {
       toast.error("Invalid or missing Product ID.");
       return;
@@ -72,7 +80,6 @@ export default function ProductDetail() {
   };
 
   const handleAddToFavourite = (productId: number) => {
-    console.log("Added to favourites", productId);
     const token = localStorage.getItem("token");
     if (!token) {
       toast.error("You must be logged in to add to favourites.");
@@ -93,78 +100,92 @@ export default function ProductDetail() {
     }
     setIsModalOpen(true);
   };
-
   const closeReviewModal = () => {
     setIsModalOpen(false);
   };
+
+  const colors = prductByIdData?.colors || [];
+  const selectedColor = colors[selectedColorIndex] || null;
+  let selectedColorImages: string[] = [];
+
+  if (selectedColor?.image) {
+    selectedColorImages = selectedColor.image.split(",");
+  }
+
+  const mainImage =
+    selectedColorImages.length > 0
+      ? selectedColorImages[selectedImageIndex]
+      : prductByIdData?.image;
+
+  const totalSoldOutProducts =
+    (prductByIdData?.totalProducts || 0) -
+    (prductByIdData?.remainingProduct ?? 0);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <Link
         to="/shop"
-        className="inline-flex items-center text-[#b1a249] hover:text-[#8a7d2a] mb-6 transition duration-200"
+        className="inline-flex items-center text-[#792099] hover:text-[#792099] mb-6 transition duration-200"
       >
         <ArrowLeft className="h-5 w-5 mr-2" />
         Back to Shop
       </Link>
 
       <div className="lg:grid lg:grid-cols-2 lg:gap-x-8">
-        {/*Product Images  */}
+        {/* Left Side: Main image & thumbnails */}
         <div className="mb-8 lg:mb-0">
-          <div className="aspect-w-4 aspect-h-3 rounded-lg overflow-hidden bg-gray-100">
+          {/* Main Image */}
+          {/* Main Image with hover-zoom */}
+          <div className="relative w-full h-[500px] overflow-hidden bg-gray-100 rounded-lg">
             <img
-              src={
-                prductByIdData?.colors?.[selectedImage]?.image ||
-                prductByIdData?.image
-              }
+              src={mainImage}
               alt={prductByIdData?.name}
-              className="w-full h-96 object-cover object-center transition-transform duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg"
+              className="
+      w-full
+      h-full
+      object-cover
+      object-center
+      transition-transform
+      duration-300
+      ease-in-out
+      transform
+      hover:scale-110
+      origin-center
+    "
             />
           </div>
-          <div className="mt-4 grid grid-cols-4 gap-4">
-            {prductByIdData?.colors?.map((color, index) => {
-              const colorString = color.color;
-              const isValidColor = (str: string) => {
-                const s = new Option().style;
-                s.color = str;
-                return s.color !== "";
-              };
 
-              const buttonColor = isValidColor(colorString)
-                ? colorString
-                : "transparent";
-
-              return (
+          {/* Thumbnails for the currently selected color */}
+          {selectedColorImages.length > 1 && (
+            <div className="mt-4 grid grid-cols-4 gap-4">
+              {selectedColorImages.map((imgUrl, idx) => (
                 <button
-                  key={color.id}
-                  onClick={() => setSelectedImage(index)}
+                  key={idx}
+                  onClick={() => setSelectedImageIndex(idx)}
                   className={`aspect-w-1 aspect-h-1 rounded-lg overflow-hidden p-2 text-center ${
-                    selectedImage === index
+                    selectedImageIndex === idx
                       ? "ring-2 ring-blue-500"
                       : "ring-1 ring-gray-200"
                   }`}
-                  style={{ backgroundColor: buttonColor }}
                 >
                   <img
-                    src={color.image}
-                    alt={color.color}
+                    src={imgUrl}
+                    alt={`Color image ${idx}`}
                     className="w-full h-20 object-cover object-center transition-transform duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg"
                   />
-                  <span className="block mt-1 text-sm font-medium text-gray-900">
-                    {color.color}
-                  </span>
                 </button>
-              );
-            })}
-          </div>
-          {/* Tab Links For Short Description And Long Description */}
+              ))}
+            </div>
+          )}
+
+          {/* Tabs for description, additional, reviews */}
           <div className="mt-10">
             <div className="flex border-b">
               <button
                 className={`px-4 py-2 font-medium transition duration-200 ${
                   activeTab === "description"
-                    ? "border-b-2 border-[#b1a249] text-[#b1a249]"
-                    : "text-gray-600 hover:text-[#b1a249] focus:text-[#8a7d2a]"
+                    ? "border-b-2 border-[#792099] text-[#792099]"
+                    : "text-gray-600 hover:text-[#792099]"
                 }`}
                 onClick={() => setActiveTab("description")}
               >
@@ -174,8 +195,8 @@ export default function ProductDetail() {
               <button
                 className={`px-4 py-2 font-medium transition duration-200 ${
                   activeTab === "additional"
-                    ? "border-b-2 border-[#b1a249] text-[#b1a249]"
-                    : "text-gray-600 hover:text-[#b1a249] focus:text-[#8a7d2a]"
+                    ? "border-b-2 border-[#792099] text-[#792099]"
+                    : "text-gray-600 hover:text-[#792099]"
                 }`}
                 onClick={() => setActiveTab("additional")}
               >
@@ -185,8 +206,8 @@ export default function ProductDetail() {
               <button
                 className={`px-4 py-2 font-medium transition duration-200 ${
                   activeTab === "reviews"
-                    ? "border-b-2 border-[#b1a249] text-[#b1a249]"
-                    : "text-gray-600 hover:text-[#b1a249] focus:text-[#8a7d2a]"
+                    ? "border-b-2 border-[#792099] text-[#792099]"
+                    : "text-gray-600 hover:text-[#792099]"
                 }`}
                 onClick={() => {
                   setActiveTab("reviews");
@@ -277,6 +298,8 @@ export default function ProductDetail() {
             </div>
           </div>
         </div>
+
+        {/* Right Side: Product Details & Color Swatches */}
         <div className="lg:pl-8">
           {/* Product Info */}
           <div className="mb-6">
@@ -290,7 +313,7 @@ export default function ProductDetail() {
                     key={index}
                     className={`h-5 w-5 ${
                       index < Math.floor(prductByIdData?.rating || 0)
-                        ? "text-yellow-400 fill-current"
+                        ? "text-[#792099] fill-current"
                         : "text-gray-300"
                     }`}
                   />
@@ -298,35 +321,50 @@ export default function ProductDetail() {
               </div>
               <span className="ml-2 text-gray-600">
                 {prductByIdData?.rating ? prductByIdData?.rating : "No Rating"}{" "}
-                (
-                {prductByIdData?.reviews
-                  ? prductByIdData?.reviews
-                  : "No Reviews Yet"}{" "}
+                ({prductByIdData?.reviews ? prductByIdData?.reviews : 0}{" "}
                 reviews)
               </span>
             </div>
+            <p className="text-gray-600 mb-4">
+              Total Items Sold Out {totalSoldOutProducts}
+            </p>
 
-            {/* Sample price */}
+            {/* Price */}
             <p className="text-3xl font-bold text-gray-900 mb-4">
-              Price: $
+              Price:
+              {prductByIdData?.currency}{" "}
               {parseFloat(prductByIdData?.price?.toString() || "0").toFixed(2)}
             </p>
+
             {/* Discount Tier Prices */}
             <div className="mb-4 grid grid-cols-2 gap-x-8 gap-y-4">
-              {prductByIdData?.discountTiers?.[0]?.discountedPrice ? (
-                <p className="col-span-2 text-gray-600">No discount pieces</p>
+              {prductByIdData?.discountTiers?.some(
+                (tier) => tier.range !== "No discount"
+              ) ? (
+                <div className="mb-4 gap-x-8 gap-y-4">
+                  {prductByIdData?.discountTiers
+                    ?.filter((tier) => tier.range !== "No discount")
+                    .map((tier, index) => (
+                      <div
+                        key={index}
+                        className="text-gray-600 flex justify-between w-full"
+                      >
+                        <span className="whitespace-nowrap">
+                          {tier.range} pieces
+                        </span>
+                        <span className="font-bold">
+                          {prductByIdData?.currency}{" "}
+                          {parseFloat(tier.discountedPrice).toFixed(2)}%
+                        </span>
+                      </div>
+                    ))}
+                </div>
               ) : (
-                prductByIdData?.discountTiers?.map((tier, index) => (
-                  <div key={index} className="text-gray-600 text-left">
-                    <span className="block">{tier.range} pieces</span>
-                    <span className="block">-</span>
-                    <span className="block font-bold">
-                      ${parseFloat(tier.discountedPrice).toFixed(2)}
-                    </span>
-                  </div>
-                ))
+                <p className="text-gray-500">No discount available</p>
               )}
             </div>
+
+            {/* Basic product info (dimensions, weight, etc.) */}
             <div className="bg-white rounded-lg shadow-lg border-t border-gray-200 pt-6 space-y-4 p-3">
               <div className="flex items-center text-gray-600 border-b border-gray-200 pb-4">
                 <Truck className="h-5 w-5 mr-2" />
@@ -343,19 +381,50 @@ export default function ProductDetail() {
                     : "Lahore"}
                 </span>
               </div>
+
               <div className="flex items-center text-gray-600 border-b border-gray-200 pb-4">
                 <RxDimensions className="h-5 w-5 mr-2" />
-                <span>Dimension</span>
+                <span>
+                  Dimension:{" "}
+                  {JSON.parse(prductByIdData?.dimension || "[]").join(", ")}
+                </span>
               </div>
-              <div className="flex items-center text-gray-600 border-b border-gray-200 pb-4">
+
+              <div className="flex items-center text-gray-600 pb-4">
                 <GiWeightCrush className="h-5 w-5 mr-2" />
                 <span>Weight {prductByIdData?.weight}</span>
               </div>
             </div>
           </div>
 
+          {/* ─────────────────────────────────────────────────────────────
+             New Position for Color Swatches: below weight and above quantity
+             ───────────────────────────────────────────────────────────── */}
+          {colors.length > 0 && (
+            <div className="mt-4 flex space-x-2 text-2xl">
+              {colors.map((color, colorIdx) => {
+                const buttonColor = color.color ?? "#fff";
+                return (
+                  <button
+                    key={color.id}
+                    className={`w-12 h-12 rounded-full ring-1 ring-gray-300 cursor-pointer transition duration-200 ${
+                      selectedColorIndex === colorIdx
+                        ? "ring-2 ring-[#792099]"
+                        : ""
+                    }`}
+                    style={{ backgroundColor: buttonColor }}
+                    onClick={() => {
+                      setSelectedColorIndex(colorIdx);
+                      setSelectedImageIndex(0);
+                    }}
+                  ></button>
+                );
+              })}
+            </div>
+          )}
+
           {/* Quantity Selector */}
-          <div className="mb-6">
+          <div className="mb-6 mt-4">
             <label
               htmlFor="quantity"
               className="block text-sm font-medium text-gray-700 mb-2"
@@ -387,7 +456,7 @@ export default function ProductDetail() {
               onClick={() =>
                 handleAddToCart(quantity, Number(prductByIdData?.id) || 0)
               }
-              className="cursor-pointer flex-1 bg-[#f3ffc0] text-[#b1a249] font-semibold shadow-md px-6 py-3 rounded-md hover:bg-[#f3ffc0] hover:text-[#b1a249] focus:bg-[#e5ff8c] focus:text-[#8a7d2a] focus:font-semibold focus:shadow-lg flex items-center justify-center transition duration-200"
+              className="cursor-pointer flex-1 bg-[#792099] text-white font-semibold shadow-md px-6 py-3 rounded-md hover:bg-[#792099] flex items-center justify-center transition duration-200"
             >
               <ShoppingCart className="h-5 w-5 mr-2" />
               Add to Cart
@@ -397,7 +466,7 @@ export default function ProductDetail() {
               onClick={openReviewModal}
               className="p-3 border border-gray-300 rounded-md hover:bg-gray-50 flex items-center gap-2 cursor-pointer"
             >
-              <Star className="h-5 w-5 text-yellow-500" />
+              <Star className="h-5 w-5 text-[#792099]" />
               <span>Add Review</span>
             </button>
 
@@ -427,6 +496,7 @@ export default function ProductDetail() {
               >
                 <img
                   src={
+                    // This is also a place you can adapt for multiple images...
                     product.colors?.[0]?.image?.[0] ||
                     "https://via.placeholder.com/300"
                   }
@@ -442,13 +512,14 @@ export default function ProductDetail() {
                 </div>
                 <div className="mt-4">
                   <span className="text-lg font-semibold">
-                    ${product.price}
+                    {product.currency}
+                    {product.price}
                   </span>
                 </div>
                 <div className="mt-4">
                   <Link to={`/product/${product.similarProductId}`}>
-                    <button className="bg-[#f3ffc0] text-[#b1a249] font-semibold shadow-md px-4 py-2 rounded-md hover:bg-[#f3ffc0] hover:text-[#b1a249] focus:bg-[#e5ff8c] focus:text-[#8a7d2a] focus:font-semibold focus:shadow-lg transition duration-200 cursor-pointer">
-                      View Product{" "}
+                    <button className="bg-[#792099] text-white font-semibold shadow-md px-4 py-2 rounded-md hover:bg-[#792099] transition duration-200 cursor-pointer">
+                      View Product
                     </button>
                   </Link>
                 </div>

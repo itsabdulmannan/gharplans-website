@@ -8,7 +8,8 @@ export const useProductHook = () => {
     minPrice?: number,
     maxPrice?: number,
     offset: number = 0,
-    limit: number = 10
+    limit: number = 10,
+    searchQuery: string = ""
   ) => {
     try {
       setLoading(true);
@@ -17,7 +18,8 @@ export const useProductHook = () => {
         minPrice,
         maxPrice,
         offset,
-        limit
+        limit,
+        searchQuery
       );
       setProductData(response.data.products);
     } catch (error) {
@@ -109,6 +111,14 @@ export const useProductHook = () => {
       console.error("Error adding to cart:", error);
     }
   };
+  const getCarouselItems = async (setCarouselItems: Function) => {
+    try {
+      const response = await Apis.getCaoruselItems();
+      setCarouselItems(response.data.data);
+    } catch (error) {
+      console.error("Error fetching carousel items:", error);
+    }
+  };
   return {
     getProduct,
     getCategory,
@@ -119,5 +129,6 @@ export const useProductHook = () => {
     featuredProducts,
     addToFavourite,
     addToCart,
+    getCarouselItems,
   };
 };

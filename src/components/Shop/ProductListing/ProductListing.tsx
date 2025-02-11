@@ -16,15 +16,19 @@ export default function ProductListing({
   currentPage: number;
   setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
 }) {
-  const { getProduct } = useProductHook();
+  const { getProduct, getCarouselItems } = useProductHook();
   const [productData, setProductData] = useState<Product[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [carouselItems, setCarouselItems] = useState<Product[]>([]);
   const limit = 12;
   const offset = (currentPage - 1) * limit;
 
   const [minPrice, maxPrice] = selectedPrice
     ? selectedPrice.split("-").map(Number)
     : [undefined, undefined];
+  useEffect(() => {
+    getCarouselItems(setCarouselItems);
+  }, []);
 
   useEffect(() => {
     getProduct(
@@ -34,7 +38,8 @@ export default function ProductListing({
       minPrice,
       maxPrice,
       offset,
-      limit
+      limit,
+      searchQuery
     );
   }, [selectedCategory, selectedPrice, currentPage]);
 
@@ -52,48 +57,33 @@ export default function ProductListing({
           onPointerEnterCapture={() => console.log("Pointer entered")}
           onPointerLeaveCapture={() => console.log("Pointer left")}
         >
-          <div className="relative h-[350px]">
-            <img
-              src="https://images.unsplash.com/photo-1497436072909-60f360e1d4b1?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2560&q=80"
-              alt="image 1"
-              className="h-full w-full object-cover"
-            />
-            <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 mb-6 text-white text-center z-20">
-              <h3 className="text-2xl font-semibold mb-2">Product Title</h3>
-              <p className="mb-4">Some description of the product.</p>
-              <button className="bg-[#792099] text-white font-semibold shadow-md hover:bg-[#792099] hover:text-white focus:bg-[#792099] focus:text-white focus:font-semibold focus:shadow-lg transition duration-200 px-4 py-2">
-                View Product
-              </button>
-            </div>
-          </div>
-          <div className="relative h-[350px]">
-            <img
-              src="https://images.unsplash.com/photo-1493246507139-91e8fad9978e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2940&q=80"
-              alt="image 2"
-              className="h-full w-full object-cover"
-            />
-            <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 mb-6 text-white text-center z-20">
-              <h3 className="text-2xl font-semibold mb-2">Product Title</h3>
-              <p className="mb-4">Some description of the product.</p>
-              <button className="bg-[#792099] text-white font-semibold shadow-md hover:bg-[#792099] hover:text-white focus:bg-[#792099] focus:text-white focus:font-semibold focus:shadow-lg transition duration-200 px-4 py-2">
-                View Product
-              </button>
-            </div>
-          </div>
-          <div className="relative h-[350px]">
-            <img
-              src="https://images.unsplash.com/photo-1518623489648-a173ef7824f3?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2762&q=80"
-              alt="image 3"
-              className="h-full w-full object-cover"
-            />
-            <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 mb-6 text-white text-center z-20">
-              <h3 className="text-2xl font-semibold mb-2">Product Title</h3>
-              <p className="mb-4">Some description of the product.</p>
-              <button className="bg-[#792099] text-white font-semibold shadow-md hover:bg-[#792099] hover:text-white focus:bg-[#792099] focus:text-white focus:font-semibold focus:shadow-lg transition duration-200 px-4 py-2">
-                View Product
-              </button>
-            </div>
-          </div>
+          {carouselItems.length > 0 ? (
+            carouselItems.map((item) => (
+              <div key={item?.id} className="relative h-[350px]">
+                <img
+                  src={
+                    item.colors?.[0]?.image?.split(",")[0] ||
+                    "default-image-url"
+                  }
+                  alt={item.name}
+                  className="h-full w-full object-cover"
+                />
+                <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 mb-6 text-white text-center z-20">
+                  <h3 className="text-2xl font-semibold mb-2">{item.name}</h3>
+                  <p className="mb-4">
+                    {item.shortDescription || "No description available."}
+                  </p>
+                  <Link to={`/shop/product/${item.id}`}>
+                    <button className="bg-[#792099] text-white font-semibold shadow-md hover:bg-[#792099] hover:text-white focus:bg-[#792099] focus:text-white focus:font-semibold focus:shadow-lg transition duration-200 px-4 py-2 cursor-pointer">
+                      View Product
+                    </button>
+                  </Link>
+                </div>
+              </div>
+            ))
+          ) : (
+            <div>Loading...</div>
+          )}
         </Carousel>
       </div>
 

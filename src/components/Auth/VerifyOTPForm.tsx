@@ -117,7 +117,7 @@ export default function VerifyOTPForm() {
                     value={digit}
                     onChange={(e) => handleChange(index, e.target.value)}
                     onKeyDown={(e) => handleKeyDown(index, e)}
-                    className="w-12 h-12 text-center text-xl border-2 border-[#b1a249] rounded-md focus:ring-[#b1a249] focus:border-[#b1a249] text-[#8a7d2a] transition duration-200"
+                    className="w-12 h-12 text-center text-xl border-2 border-[#792099] rounded-md focus:ring-[#792099] focus:border-[#792099] text-[#792099] transition duration-200"
                   />
                 ))}
               </div>
@@ -129,9 +129,9 @@ export default function VerifyOTPForm() {
                 disabled={loading}
                 className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${
                   loading
-                    ? "bg-[#f3ffc0] text-[#b1a249]"
-                    : "bg-[#b1a249] hover:bg-[#f3ffc0] hover:text-[#b1a249] focus:ring-[#b1a249]"
-                } hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#b1a249] transition duration-200`}
+                    ? "bg-[#792099] text-[#b1a249]"
+                    : "bg-[#792099] hover:bg-[#792099] hover:text-white focus:ring-[#792099]"
+                } hover:bg-[#792099] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#b1a249] transition duration-200`}
               >
                 {loading ? (
                   <svg

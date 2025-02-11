@@ -78,7 +78,7 @@ export default function LoginForm() {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="block w-full pl-10 pr-3 py-2 sm:text-sm border-gray-300 rounded-md focus:ring-[#b1a249] focus:border-[#b1a249] text-[#8a7d2a]"
+                  className="block w-full pl-10 pr-3 py-2 sm:text-sm border-gray-300 rounded-md focus:ring-[#792099] focus:border-[#792099] text-[#792099]"
                   placeholder="Password"
                 />
               </div>
@@ -89,11 +89,11 @@ export default function LoginForm() {
                 <input
                   id="remember-me"
                   type="checkbox"
-                  className="h-4 w-4 text-[#b1a249] focus:ring-[#b1a249] border-gray-300 rounded"
+                  className="h-4 w-4 text-[#792099] focus:ring-[#792099] border-gray-300 rounded"
                 />
                 <label
                   htmlFor="remember-me"
-                  className="ml-2 block text-sm text-[#8a7d2a]"
+                  className="ml-2 block text-sm text-[#792099]"
                 >
                   Remember me
                 </label>
@@ -102,7 +102,7 @@ export default function LoginForm() {
               <div className="text-sm">
                 <Link
                   to="/forgot-password"
-                  className="font-medium text-[#b1a249] hover:text-[#8a7d2a] focus:text-[#8a7d2a] transition duration-200"
+                  className="font-medium text-[#792099] hover:text-[#792099] focus:text-[#792099] transition duration-200"
                 >
                   Forgot your password?
                 </Link>
@@ -112,12 +112,12 @@ export default function LoginForm() {
             <div>
               <button
                 type="submit"
-                disabled={loading} // Disable the button when loading
+                disabled={loading}
                 className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${
                   loading
-                    ? "bg-[#f3ffc0] text-[#b1a249]"
-                    : "bg-[#b1a249] text-white"
-                } hover:bg-[#f3ffc0] hover:text-[#b1a249] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#b1a249] transition duration-200`}
+                    ? "bg-[#792099] text-[#792099]"
+                    : "bg-[#792099] text-white"
+                } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#792099] transition duration-200`}
               >
                 {loading ? (
                   <svg

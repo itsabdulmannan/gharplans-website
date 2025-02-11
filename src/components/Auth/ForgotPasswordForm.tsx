@@ -68,7 +68,7 @@ export default function ForgotPasswordForm() {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="block w-full pl-10 pr-3 py-2 sm:text-sm border-gray-300 rounded-md focus:ring-[#b1a249] focus:border-[#b1a249] text-[#8a7d2a]"
+                  className="block w-full pl-10 pr-3 py-2 sm:text-sm border-gray-300 rounded-md focus:ring-[#792099] focus:border-[#792099] text-[#792099]"
                   placeholder="you@example.com"
                 />
               </div>
@@ -80,9 +80,9 @@ export default function ForgotPasswordForm() {
                 disabled={loading}
                 className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${
                   loading
-                    ? "bg-[#f3ffc0] text-[#b1a249]"
-                    : "bg-[#b1a249] hover:bg-[#f3ffc0] hover:text-[#b1a249] focus:ring-[#b1a249]"
-                } hover:bg-[#f3ffc0]  focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#b1a249] transition duration-200`}
+                    ? "bg-[#f3ffc0] text-[#792099]"
+                    : "bg-[#792099] hover:bg-[#f3ffc0] hover:text-[#792099] focus:ring-[#792099]"
+                } hover:bg-[#f3ffc0]  focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#792099] transition duration-200`}
               >
                 {loading ? (
                   <svg

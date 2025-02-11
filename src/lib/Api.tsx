@@ -26,14 +26,17 @@ export const Apis = {
     minPrice?: number,
     maxPrice?: number,
     offset: number = 0,
-    limit: number = 10
+    limit: number = 10,
+    searchQuery: string = ""
   ) =>
     Request.get(
       `/product?${categoryId ? `categoryId=${categoryId}&` : ""}${
         minPrice ? `minPrice=${minPrice}&` : ""
       }${
         maxPrice ? `maxPrice=${maxPrice}&` : ""
-      }offset=${offset}&limit=${limit}`
+      }offset=${offset}&limit=${limit}${
+        searchQuery ? `&name=${searchQuery}` : ""
+      }`
     ),
   addToFavourite: (productId: number) =>
     Request.post(
@@ -104,4 +107,5 @@ export const Apis = {
   updateQuantity: (id: number, quantity: number, productId: number) =>
     Request.put(`/cart/update`, { id, quantity, productId }),
   createOrder: (body: any) => Request.post("/orders", body),
+  getCaoruselItems: () => Request.get("/product/carousel-products"),
 };

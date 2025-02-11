@@ -7,6 +7,7 @@ import axios, {
 import Swal from "sweetalert2";
 
 export const Request = axios.create({
+  // baseURL: "http://16.170.239.246/api",
   baseURL: "http://localhost:3005",
 });
 

@@ -88,7 +88,7 @@ export default function SignupForm() {
                     required
                     value={formData.firstName}
                     onChange={handleChange}
-                    className="block w-full pl-10 pr-3 py-2 sm:text-sm border-gray-300 rounded-md focus:ring-[#b1a249] focus:border-[#b1a249] text-[#8a7d2a]"
+                    className="block w-full pl-10 pr-3 py-2 sm:text-sm border-gray-300 rounded-md focus:ring-[#792099] focus:border-[#792099] text-[#792099]"
                     placeholder="John"
                   />
                 </div>
@@ -112,7 +112,7 @@ export default function SignupForm() {
                     required
                     value={formData.lastName}
                     onChange={handleChange}
-                    className="block w-full pl-10 pr-3 py-2 sm:text-sm border-gray-300 rounded-md focus:ring-[#b1a249] focus:border-[#b1a249] text-[#8a7d2a]"
+                    className="block w-full pl-10 pr-3 py-2 sm:text-sm border-gray-300 rounded-md focus:ring-[#792099] focus:border-[#792099] text-[#792099]"
                     placeholder="Doe"
                   />
                 </div>
@@ -138,7 +138,7 @@ export default function SignupForm() {
                     required
                     value={formData.email}
                     onChange={handleChange}
-                    className="block w-full pl-10 pr-3 py-2 sm:text-sm border-gray-300 rounded-md focus:ring-[#b1a249] focus:border-[#b1a249] text-[#8a7d2a]"
+                    className="block w-full pl-10 pr-3 py-2 sm:text-sm border-gray-300 rounded-md focus:ring-[#792099] focus:border-[#792099] text-[#792099]"
                     placeholder="you@example.com"
                   />
                 </div>
@@ -162,7 +162,7 @@ export default function SignupForm() {
                     required
                     value={formData.contactNo}
                     onChange={handleChange}
-                    className="block w-full pl-10 pr-3 py-2 sm:text-sm border-gray-300 rounded-md focus:ring-[#b1a249] focus:border-[#b1a249] text-[#8a7d2a]"
+                    className="block w-full pl-10 pr-3 py-2 sm:text-sm border-gray-300 rounded-md focus:ring-[#792099] focus:border-[#792099] text-[#792099]"
                     placeholder="(+123) 456-7890"
                   />
                 </div>
@@ -188,7 +188,7 @@ export default function SignupForm() {
                     required
                     value={formData.password}
                     onChange={handleChange}
-                    className="block w-full pl-10 pr-3 py-2 sm:text-sm border-gray-300 rounded-md focus:ring-[#b1a249] focus:border-[#b1a249] text-[#8a7d2a]"
+                    className="block w-full pl-10 pr-3 py-2 sm:text-sm border-gray-300 rounded-md focus:ring-[#792099] focus:border-[#792099] text-[#792099]"
                     placeholder="Password"
                   />
                 </div>
@@ -212,7 +212,7 @@ export default function SignupForm() {
                     required
                     value={formData.confirmPassword}
                     onChange={handleChange}
-                    className="block w-full pl-10 pr-3 py-2 sm:text-sm border-gray-300 rounded-md focus:ring-[#b1a249] focus:border-[#b1a249] text-[#8a7d2a]"
+                    className="block w-full pl-10 pr-3 py-2 sm:text-sm border-gray-300 rounded-md focus:ring-[#792099] focus:border-[#792099] text-[#792099]"
                     placeholder="Confirm Password"
                   />
                 </div>
@@ -238,7 +238,7 @@ export default function SignupForm() {
                     required
                     value={formData.address}
                     onChange={handleChange}
-                    className="block w-full pl-10 pr-3 py-2 sm:text-sm border-gray-300 rounded-md focus:ring-[#b1a249] focus:border-[#b1a249] text-[#8a7d2a]"
+                    className="block w-full pl-10 pr-3 py-2 sm:text-sm border-gray-300 rounded-md focus:ring-[#792099] focus:border-[#792099] text-[#792099]"
                     placeholder="123 Street Name"
                   />
                 </div>
@@ -262,7 +262,7 @@ export default function SignupForm() {
                     required
                     value={formData.city}
                     onChange={handleChange}
-                    className="block w-full pl-10 pr-3 py-2 sm:text-sm border-gray-300 rounded-md focus:ring-[#b1a249] focus:border-[#b1a249] text-[#8a7d2a]"
+                    className="block w-full pl-10 pr-3 py-2 sm:text-sm border-gray-300 rounded-md focus:ring-[#792099] focus:border-[#792099] text-[#792099]"
                     placeholder="City Name"
                   />
                 </div>
@@ -288,7 +288,7 @@ export default function SignupForm() {
                     required
                     value={formData.dob}
                     onChange={handleChange}
-                    className="block w-full pl-10 pr-3 py-2 sm:text-sm border-gray-300 rounded-md focus:ring-[#b1a249] focus:border-[#b1a249] text-[#8a7d2a]"
+                    className="block w-full pl-10 pr-3 py-2 sm:text-sm border-gray-300 rounded-md focus:ring-[#792099] focus:border-[#792099] text-[#792099]"
                   />
                 </div>
               </div>
@@ -320,8 +320,8 @@ export default function SignupForm() {
                 type="submit"
                 className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${
                   loading
-                    ? "bg-[#f3ffc0] text-[#b1a249]"
-                    : "bg-[#b1a249] hover:bg-[#f3ffc0] hover:text-[#b1a249] focus:ring-[#b1a249]"
+                    ? "bg-[#792099] text-[#792099]"
+                    : "bg-[#792099] hover:bg-[#792099] hover:text-white focus:ring-[#792099]"
                 } focus:outline-none focus:ring-2 focus:ring-offset-2 transition duration-200`}
                 disabled={loading}
               >

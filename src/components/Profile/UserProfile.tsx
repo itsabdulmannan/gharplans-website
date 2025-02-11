@@ -89,13 +89,13 @@ export default function UserProfile() {
       {/* Profile Section */}
       <div className="mx-auto bg-white p-8 rounded-lg shadow-lg max-w-8xl">
         <div className="flex items-center space-x-6 mb-8">
-          <div className="flex-shrink-0">
+          {/* <div className="flex-shrink-0">
             <img
               className="w-32 h-32 rounded-full border-4 border-[#b1a249]"
               src={getUserData?.profileImage || "default-profile.jpg"}
               alt="Profile"
             />
-          </div>
+          </div> */}
           <div>
             <h2 className="text-3xl font-semibold text-[#b1a249]">
               {getUserData?.firstName} {getUserData?.lastName}

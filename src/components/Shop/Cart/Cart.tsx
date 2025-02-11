@@ -54,7 +54,7 @@ export default function Cart() {
   const shipping = subtotal > 500 ? 0 : 50;
   const total = subtotal + shipping;
 
-  if (cartItems.length === 0) {
+  if (!cartItems || cartItems.length === 0) {
     return (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="text-center">

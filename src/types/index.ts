@@ -17,6 +17,7 @@ export interface Product {
     addiotionalInformation: string;
     similarProductId: string[];
     hasDiscount?: boolean;
+    dimensions: string;
     discountTiers?: DiscountTier[];
     deliveryCharges?: {
       id: number;
@@ -27,8 +28,9 @@ export interface Product {
       destinationCity: { id: number; name: string };
     }[];
   };
-    weight: number;
+  weight: number;
   favouriteId: number;
+  dimension: string;
   singleProductPrice: number;
   id: string;
   name: string;
@@ -40,6 +42,8 @@ export interface Product {
   features?: string[];
   rating?: number;
   reviews?: number;
+  totalProducts: number;
+  remainingProduct: number;
   stock?: number;
   colors: Color[];
   options: Option[];
@@ -48,6 +52,7 @@ export interface Product {
   similarProductId: string[];
   hasDiscount?: boolean;
   discountTiers?: DiscountTier[];
+  currency: string;
   deliveryCharges?: {
     id: number;
     sourceCityId: number;
