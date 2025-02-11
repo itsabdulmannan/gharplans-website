@@ -26,7 +26,6 @@ export default function ProductDetail() {
   const [quantity, setQuantity] = useState(1);
   const [prductByIdData, setPrductByIdData] = useState<Product | null>(null);
 
-  // Tabs: "description", "additional", "reviews"
   const [activeTab, setActiveTab] = useState("description");
 
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
@@ -34,7 +33,6 @@ export default function ProductDetail() {
   const [reviewsData, setReviewsData] = useState<ReviewsData>([]);
   const [showFullDescription, setShowFullDescription] = useState(false);
 
-  // Track which color is selected, and which image within that color is selected
   const [selectedColorIndex, setSelectedColorIndex] = useState(0);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
@@ -45,13 +43,11 @@ export default function ProductDetail() {
     }
   }, [id]);
 
-  // Handle cart addition
   const handleAddToCart = (quantity: number, productId: number) => {
     addToCart(quantity, productId);
     toast.success(`Item Added to cart`);
   };
 
-  // Handle switching to "reviews" tab and loading them
   const handleReviewTabClick = (productId: number | undefined) => {
     if (productId !== undefined) {
       getReviews(productId, setReviewsData);
@@ -61,7 +57,6 @@ export default function ProductDetail() {
     }
   };
 
-  // Submit a review
   const handleReviewSubmit = (rating: number, reviewText: string) => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -117,10 +112,6 @@ export default function ProductDetail() {
       ? selectedColorImages[selectedImageIndex]
       : prductByIdData?.image;
 
-  const totalSoldOutProducts =
-    (prductByIdData?.totalProducts || 0) -
-    (prductByIdData?.remainingProduct ?? 0);
-
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <Link
@@ -132,7 +123,6 @@ export default function ProductDetail() {
       </Link>
 
       <div className="lg:grid lg:grid-cols-2 lg:gap-x-8">
-        {/* Left Side: Main image & thumbnails */}
         <div className="mb-8 lg:mb-0">
           {/* Main Image */}
           {/* Main Image with hover-zoom */}
@@ -177,7 +167,6 @@ export default function ProductDetail() {
               ))}
             </div>
           )}
-
           {/* Tabs for description, additional, reviews */}
           <div className="mt-10">
             <div className="flex border-b">
@@ -223,6 +212,7 @@ export default function ProductDetail() {
               </button>
             </div>
 
+            {/* Tab content */}
             <div className="mt-4 text-gray-600">
               {activeTab === "description" && (
                 <p>{prductByIdData?.shortDescription}</p>
@@ -325,9 +315,15 @@ export default function ProductDetail() {
                 reviews)
               </span>
             </div>
-            <p className="text-gray-600 mb-4">
-              Total Items Sold Out {totalSoldOutProducts}
-            </p>
+            <div className="text-sm font-semibold">
+              {prductByIdData?.remainingProduct === 0 ? (
+                <span className="text-red-500">Out of Stock</span>
+              ) : (
+                <span className="text-gray-600">
+                  {prductByIdData?.remainingProduct} items left
+                </span>
+              )}
+            </div>
 
             {/* Price */}
             <p className="text-3xl font-bold text-gray-900 mb-4">
