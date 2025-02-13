@@ -99,12 +99,19 @@ export default function ProductDetail() {
     setIsModalOpen(false);
   };
 
+  // Safely extract colors and images
   const colors = prductByIdData?.colors || [];
   const selectedColor = colors[selectedColorIndex] || null;
   let selectedColorImages: string[] = [];
 
   if (selectedColor?.image) {
-    selectedColorImages = selectedColor.image.split(",");
+    if (typeof selectedColor.image === "string") {
+      selectedColorImages = selectedColor.image.split(",");
+    } else if (Array.isArray(selectedColor.image)) {
+      selectedColorImages = selectedColor.image;
+    } else {
+      selectedColorImages = [];
+    }
   }
 
   const mainImage =
@@ -124,24 +131,23 @@ export default function ProductDetail() {
 
       <div className="lg:grid lg:grid-cols-2 lg:gap-x-8">
         <div className="mb-8 lg:mb-0">
-          {/* Main Image */}
           {/* Main Image with hover-zoom */}
           <div className="relative w-full h-[500px] overflow-hidden bg-gray-100 rounded-lg">
             <img
               src={mainImage}
               alt={prductByIdData?.name}
               className="
-      w-full
-      h-full
-      object-cover
-      object-center
-      transition-transform
-      duration-300
-      ease-in-out
-      transform
-      hover:scale-110
-      origin-center
-    "
+                w-full
+                h-full
+                object-cover
+                object-center
+                transition-transform
+                duration-300
+                ease-in-out
+                transform
+                hover:scale-110
+                origin-center
+              "
             />
           </div>
 
@@ -167,7 +173,8 @@ export default function ProductDetail() {
               ))}
             </div>
           )}
-          {/* Tabs for description, additional, reviews */}
+
+          {/* Tabs for description, additional info, reviews */}
           <div className="mt-10">
             <div className="flex border-b">
               <button
@@ -311,8 +318,7 @@ export default function ProductDetail() {
               </div>
               <span className="ml-2 text-gray-600">
                 {prductByIdData?.rating ? prductByIdData?.rating : "No Rating"}{" "}
-                ({prductByIdData?.reviews ? prductByIdData?.reviews : 0}{" "}
-                reviews)
+                ({prductByIdData?.reviews ? prductByIdData?.reviews : 0} reviews)
               </span>
             </div>
             <div className="text-sm font-semibold">
@@ -327,8 +333,7 @@ export default function ProductDetail() {
 
             {/* Price */}
             <p className="text-3xl font-bold text-gray-900 mb-4">
-              Price:
-              {prductByIdData?.currency}{" "}
+              Price: {prductByIdData?.currency}{" "}
               {parseFloat(prductByIdData?.price?.toString() || "0").toFixed(2)}
             </p>
 
@@ -371,7 +376,8 @@ export default function ProductDetail() {
                   prductByIdData.deliveryCharges.length > 0
                     ? prductByIdData.deliveryCharges
                         .map(
-                          (charge) => charge?.destinationCity?.name ?? "Lahore"
+                          (charge) =>
+                            charge?.destinationCity?.name ?? "Lahore"
                         )
                         .join(", ")
                     : "Lahore"}
@@ -382,7 +388,22 @@ export default function ProductDetail() {
                 <RxDimensions className="h-5 w-5 mr-2" />
                 <span>
                   Dimension:{" "}
-                  {JSON.parse(prductByIdData?.dimension || "[]").join(", ")}
+                  {prductByIdData?.dimension
+                    ? (() => {
+                        try {
+                          // Try parsing the dimension field
+                          const parsed = JSON.parse(prductByIdData.dimension);
+                          if (Array.isArray(parsed)) {
+                            return parsed.join(", ");
+                          } else if (typeof parsed === "string") {
+                            return parsed;
+                          }
+                        } catch (error) {
+                          // If JSON parsing fails, assume it's a plain string
+                          return prductByIdData.dimension;
+                        }
+                      })()
+                    : "N/A"}
                 </span>
               </div>
 
@@ -393,9 +414,7 @@ export default function ProductDetail() {
             </div>
           </div>
 
-          {/* ─────────────────────────────────────────────────────────────
-             New Position for Color Swatches: below weight and above quantity
-             ───────────────────────────────────────────────────────────── */}
+          {/* Color Swatches */}
           {colors.length > 0 && (
             <div className="mt-4 flex space-x-2 text-2xl">
               {colors.map((color, colorIdx) => {
@@ -492,9 +511,16 @@ export default function ProductDetail() {
               >
                 <img
                   src={
-                    // This is also a place you can adapt for multiple images...
-                    product.colors?.[0]?.image?.[0] ||
-                    "https://via.placeholder.com/300"
+                    // Adapted for multiple images: check if colors exists and is valid
+                    product.colors &&
+                    product.colors[0] &&
+                    product.colors[0].image
+                      ? typeof product.colors[0].image === "string"
+                        ? product.colors[0].image.split(",")[0]
+                        : Array.isArray(product.colors[0].image)
+                        ? product.colors[0].image[0]
+                        : "https://via.placeholder.com/300"
+                      : "https://via.placeholder.com/300"
                   }
                   alt={product.name || "Product"}
                   className="w-full h-48 object-cover object-center transition-transform duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg rounded-2xl"

@@ -47,6 +47,19 @@ export default function ProductListing({
     product.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  // Helper function to safely get the image URL
+  const getImageSrc = (item: Product) => {
+    if (item.colors && item.colors.length > 0 && item.colors[0].image) {
+      const image = item.colors[0].image;
+      if (typeof image === "string") {
+        return image.split(",")[0];
+      } else if (Array.isArray(image)) {
+        return image[0];
+      }
+    }
+    return "default-image-url";
+  };
+
   return (
     <div>
       <div className="mb-5 relative">
@@ -61,10 +74,7 @@ export default function ProductListing({
             carouselItems.map((item) => (
               <div key={item?.id} className="relative h-[350px]">
                 <img
-                  src={
-                    item.colors?.[0]?.image?.split(",")[0] ||
-                    "default-image-url"
-                  }
+                  src={getImageSrc(item)}
                   alt={item.name}
                   className="h-full w-full object-cover"
                 />
@@ -101,7 +111,7 @@ export default function ProductListing({
               <div className="flex flex-col h-full mb-4 bg-white rounded-lg shadow-md overflow-hidden transition-transform duration-300 hover:scale-105">
                 <div className="aspect-w-1 aspect-h-1 w-full overflow-hidden bg-gray-200 xl:aspect-w-7 xl:aspect-h-8">
                   <img
-                    src={productItem.colors?.[0]?.image || "default-image-url"}
+                    src={getImageSrc(productItem)}
                     alt={productItem.name}
                     className="h-48 w-full object-cover object-center group-hover:opacity-75"
                   />
