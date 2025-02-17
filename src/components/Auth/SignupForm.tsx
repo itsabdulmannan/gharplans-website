@@ -46,7 +46,9 @@ export default function SignupForm() {
       const response = await registerUser(formData);
 
       if (response?.status === 201) {
-        toast.success("Account created successfully!");
+        toast.success(
+          "Account created successfully! An OTP has been sent. Please check your email."
+        );
         navigate("/verify-otp", { state: { email: formData.email } });
       } else {
         toast.error("Failed to create account. Please try again.");

@@ -55,7 +55,7 @@ export default function LoginForm() {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="block w-full pl-10 pr-3 py-2 sm:text-sm border-gray-300 rounded-md focus:ring-[#b1a249] focus:border-[#b1a249] text-[#8a7d2a]"
+                  className="block w-full pl-10 pr-3 py-2 sm:text-sm border-gray-300 rounded-md focus:ring-[#792099] focus:border-[#792099] text-[#792099]"
                   placeholder="you@example.com"
                 />
               </div>

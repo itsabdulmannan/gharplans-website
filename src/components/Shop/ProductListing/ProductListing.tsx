@@ -119,7 +119,8 @@ export default function ProductListing({
                 <div className="p-4 flex flex-col flex-grow">
                   <h3 className="text-sm text-gray-700">{productItem.name}</h3>
                   <p className="mt-1 text-lg font-medium text-gray-900">
-                    ${productItem.price}
+                    {productItem?.currency}
+                    {productItem.price}
                   </p>
                   <span className="mt-1 text-sm text-gray-500">
                     {productItem.category?.name || "Unknown Category"}

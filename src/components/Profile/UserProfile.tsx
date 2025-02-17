@@ -97,29 +97,29 @@ export default function UserProfile() {
             />
           </div> */}
           <div>
-            <h2 className="text-3xl font-semibold text-[#b1a249]">
+            <h2 className="text-3xl font-semibold text-[#792099]">
               {getUserData?.firstName} {getUserData?.lastName}
             </h2>
             <div className="mt-4 space-y-2">
               <p className="text-black font-semibold">
                 Email:{" "}
-                <span className="text-[#b1a249]">{getUserData?.email}</span>
+                <span className="text-[#792099]">{getUserData?.email}</span>
               </p>
               <p className="text-black font-semibold">
                 Phone:{" "}
-                <span className="text-[#b1a249]">{getUserData?.contactNo}</span>
+                <span className="text-[#792099]">{getUserData?.contactNo}</span>
               </p>
               <p className="text-black font-semibold">
                 Address:{" "}
-                <span className="text-[#b1a249]">{getUserData?.address}</span>
+                <span className="text-[#792099]">{getUserData?.address}</span>
               </p>
               <p className="text-black font-semibold">
                 City:{" "}
-                <span className="text-[#b1a249]">{getUserData?.city}</span>
+                <span className="text-[#792099]">{getUserData?.city}</span>
               </p>
               <p className="text-black font-semibold">
                 Date Of Birth:{" "}
-                <span className="text-[#b1a249]">
+                <span className="text-[#792099]">
                   {getUserData?.dateOfBirth?.split("T")[0]}
                 </span>
               </p>
@@ -128,13 +128,13 @@ export default function UserProfile() {
         </div>
         <div className="flex gap-2.5 justify-end">
           <button
-            className="bg-[#b1a249] text-white py-2 px-4 rounded"
+            className="bg-[#792099] text-white py-2 px-4 rounded"
             onClick={() => setIsEditingProfile(true)}
           >
             Edit Profile
           </button>
           <button
-            className="bg-[#b1a249] text-white py-2 px-4 rounded"
+            className="bg-[#792099] text-white py-2 px-4 rounded"
             onClick={handleLogout}
           >
             Logout

@@ -28,6 +28,7 @@ export interface Product {
       destinationCity: { id: number; name: string };
     }[];
   };
+  unit: string;
   weight: number;
   favouriteId: number;
   dimension: string;
