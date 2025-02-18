@@ -78,7 +78,7 @@ export default function UserProfile() {
       toast.success("Profile updated successfully!");
       setIsEditingProfile(false);
     } catch (error: any) {
-      toast.error(error.message);
+      // toast.error(error.message);
     }
   };
 
@@ -143,75 +143,82 @@ export default function UserProfile() {
       </div>
 
       {/* Orders Section */}
+      {/* Orders Section */}
       <div className="mt-5 bg-white p-6 rounded-lg shadow-lg">
         <h2 className="text-xl font-semibold mb-4">My Orders</h2>
-        <div className="space-y-4">
-          {orders?.map((order: any) => (
-            <div
-              key={order.id}
-              className="flex items-center justify-between border-b py-4"
-            >
-              <div className="flex items-center space-x-4">
-                <FileText className="h-6 w-6 text-gray-600" />
-                <div>
-                  <p className="font-semibold text-gray-800">
-                    Order #{order.orderId}
-                  </p>
-                  <p className="text-sm text-gray-500">
-                    Date: {order.createdAt.split("T")[0]}
-                  </p>
-                  <p className="text-sm text-gray-500">
-                    Total: ${order.totalAmount}
-                  </p>
+        {orders && orders.length > 0 ? (
+          <div className="space-y-4">
+            {orders.map((order: any) => (
+              <div
+                key={order?.id}
+                className="flex items-center justify-between border-b py-4"
+              >
+                <div className="flex items-center space-x-4">
+                  <FileText className="h-6 w-6 text-gray-600" />
+                  <div>
+                    <p className="font-semibold text-gray-800">
+                      Order #{order?.orderId}
+                    </p>
+                    <p className="text-sm text-gray-500">
+                      Date: {order?.createdAt.split("T")[0]}
+                    </p>
+                    <p className="text-sm text-gray-500">
+                      Total: ${order?.totalAmount}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center space-x-4">
+                  {order?.paymentScreenshot ? (
+                    <img
+                      src={order?.paymentScreenshot}
+                      alt="Payment Screenshot"
+                      className="h-16 w-16 object-cover rounded-md"
+                    />
+                  ) : (
+                    <button
+                      onClick={() => setSelectedOrderId(order.id)}
+                      className="text-black hover:text-[#b1a249] cursor-pointer"
+                    >
+                      Upload Payment Screenshot
+                    </button>
+                  )}
+                  {selectedOrderId === order.id && !order.paymentScreenshot && (
+                    <div>
+                      <input
+                        type="file"
+                        onChange={(e) => {
+                          const file = e.target.files
+                            ? e.target.files[0]
+                            : null;
+                          if (file) {
+                            handlePaymentUpload(order.id, file);
+                          }
+                        }}
+                        className="hidden"
+                        id={`file-upload-${order.id}`}
+                      />
+                      <label
+                        htmlFor={`file-upload-${order.id}`}
+                        className="flex items-center text-black cursor-pointer"
+                      >
+                        <Camera className="h-5 w-5 mr-2" />
+                        Choose Screenshot
+                      </label>
+                    </div>
+                  )}
+                  {order.paymentScreenshot && (
+                    <span className="text-green-600 text-sm flex items-center">
+                      <CheckCircle className="h-5 w-5 mr-1" />
+                      Screenshot Uploaded
+                    </span>
+                  )}
                 </div>
               </div>
-              <div className="flex items-center space-x-4">
-                {order.paymentScreenshot ? (
-                  <img
-                    src={order.paymentScreenshot}
-                    alt="Payment Screenshot"
-                    className="h-16 w-16 object-cover rounded-md"
-                  />
-                ) : (
-                  <button
-                    onClick={() => setSelectedOrderId(order.id)}
-                    className="text-black hover:text-[#b1a249] cursor-pointer"
-                  >
-                    Upload Payment Screenshot
-                  </button>
-                )}
-                {selectedOrderId === order.id && !order.paymentScreenshot && (
-                  <div>
-                    <input
-                      type="file"
-                      onChange={(e) => {
-                        const file = e.target.files ? e.target.files[0] : null;
-                        if (file) {
-                          handlePaymentUpload(order.id, file);
-                        }
-                      }}
-                      className="hidden"
-                      id={`file-upload-${order.id}`}
-                    />
-                    <label
-                      htmlFor={`file-upload-${order.id}`}
-                      className="flex items-center text-black cursor-pointer"
-                    >
-                      <Camera className="h-5 w-5 mr-2" />
-                      Choose Screenshot
-                    </label>
-                  </div>
-                )}
-                {order.paymentScreenshot && (
-                  <span className="text-green-600 text-sm flex items-center">
-                    <CheckCircle className="h-5 w-5 mr-1" />
-                    Screenshot Uploaded
-                  </span>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        ) : (
+          <p className="text-gray-500 text-center">No orders found</p>
+        )}
       </div>
 
       {/* Edit Profile Modal */}

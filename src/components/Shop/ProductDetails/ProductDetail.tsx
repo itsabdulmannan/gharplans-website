@@ -188,7 +188,7 @@ export default function ProductDetail() {
               <div className="mt-12">
                 <div className="flex border-b">
                   <button
-                    className={`px-4 py-2 font-medium transition duration-200 ${
+                    className={`px-4 py-2 font-medium transition duration-200 cursor-pointer ${
                       activeTab === "description"
                         ? "border-b-2 border-[#792099] text-[#792099]"
                         : "text-gray-600 hover:text-[#792099]"
@@ -199,7 +199,7 @@ export default function ProductDetail() {
                   </button>
 
                   <button
-                    className={`px-4 py-2 font-medium transition duration-200 ${
+                    className={`px-4 py-2 font-medium transition duration-200 cursor-pointer ${
                       activeTab === "additional"
                         ? "border-b-2 border-[#792099] text-[#792099]"
                         : "text-gray-600 hover:text-[#792099]"
@@ -210,7 +210,7 @@ export default function ProductDetail() {
                   </button>
 
                   <button
-                    className={`px-4 py-2 font-medium transition duration-200 ${
+                    className={`px-4 py-2 font-medium transition duration-200 cursor-pointer ${
                       activeTab === "reviews"
                         ? "border-b-2 border-[#792099] text-[#792099]"
                         : "text-gray-600 hover:text-[#792099]"
@@ -250,7 +250,7 @@ export default function ProductDetail() {
                             onClick={() =>
                               setShowFullDescription(!showFullDescription)
                             }
-                            className="mt-3 text-blue-600 underline"
+                            className="mt-3 text-blue-600 underline cursor-pointer"
                           >
                             {showFullDescription ? "Read Less" : "Read More"}
                           </button>
@@ -347,10 +347,11 @@ export default function ProductDetail() {
                 </p>
 
                 {/* Discount Tiers */}
-                <div className="mb-5 grid grid-cols-2 gap-y-2">
-                  {prductByIdData?.discountTiers?.some(
-                    (tier) => tier.range !== "No discount"
-                  ) ? (
+                {/* Discount Tiers */}
+                {prductByIdData?.discountTiers?.some(
+                  (tier) => tier.range !== "No discount"
+                ) && (
+                  <div className="mb-5 grid grid-cols-2 gap-y-2">
                     <div className="space-y-1 text-gray-700">
                       {prductByIdData?.discountTiers
                         ?.filter((tier) => tier.range !== "No discount")
@@ -369,10 +370,8 @@ export default function ProductDetail() {
                           </div>
                         ))}
                     </div>
-                  ) : (
-                    <p className="text-gray-500">No discount available</p>
-                  )}
-                </div>
+                  </div>
+                )}
 
                 <div className="bg-white rounded-lg shadow-lg border border-gray-100 p-4 space-y-4">
                   <div className="flex items-center text-gray-600">
@@ -397,36 +396,36 @@ export default function ProductDetail() {
                     </span>
                   </div>
 
-                  <div className="flex items-center text-gray-600">
-                    <RxDimensions className="h-5 w-5 mr-2 text-gray-500" />
-                    <span>
-                      Dimension:{" "}
-                      {prductByIdData?.dimension
-                        ? (() => {
-                            try {
-                              const parsed = JSON.parse(
-                                prductByIdData.dimension
-                              );
-                              if (Array.isArray(parsed)) {
-                                return parsed.join(", ");
-                              } else if (typeof parsed === "string") {
-                                return parsed;
-                              }
-                            } catch (error) {
-                              return prductByIdData.dimension;
+                  {prductByIdData?.dimension && (
+                    <div className="flex items-center text-gray-600">
+                      <RxDimensions className="h-5 w-5 mr-2 text-gray-500" />
+                      <span>
+                        Dimension:{" "}
+                        {(() => {
+                          try {
+                            const parsed = JSON.parse(prductByIdData.dimension);
+                            if (Array.isArray(parsed)) {
+                              return parsed.join(", ");
+                            } else if (typeof parsed === "string") {
+                              return parsed;
                             }
-                          })()
-                        : "N/A"}
-                    </span>
-                  </div>
+                          } catch (error) {
+                            return prductByIdData.dimension;
+                          }
+                        })()}
+                      </span>
+                    </div>
+                  )}
 
-                  <div className="flex items-center text-gray-600">
-                    <GiWeightCrush className="h-5 w-5 mr-2 text-gray-500" />
-                    <span>
-                      Weight {prductByIdData?.weight}
-                      {prductByIdData?.unit}
-                    </span>
-                  </div>
+                  {prductByIdData?.weight && prductByIdData?.unit && (
+                    <div className="flex items-center text-gray-600">
+                      <GiWeightCrush className="h-5 w-5 mr-2 text-gray-500" />
+                      <span>
+                        Weight: {prductByIdData.weight}
+                        {prductByIdData.unit}
+                      </span>
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -484,7 +483,12 @@ export default function ProductDetail() {
                   onClick={() =>
                     handleAddToCart(quantity, Number(prductByIdData?.id) || 0)
                   }
-                  className="cursor-pointer flex-1 bg-[#792099] text-white font-semibold shadow-md px-6 py-3 rounded-md hover:bg-[#792099] flex items-center justify-center transition duration-200"
+                  disabled={prductByIdData?.remainingProduct === 0}
+                  className={`cursor-pointer flex-1 bg-[#792099] text-white font-semibold shadow-md px-6 py-3 rounded-md flex items-center justify-center transition duration-200 ${
+                    prductByIdData?.remainingProduct === 0
+                      ? "opacity-50 cursor-not-allowed"
+                      : "hover:bg-[#792099]"
+                  }`}
                 >
                   <ShoppingCart className="h-5 w-5 mr-2" />
                   Add to Cart
@@ -513,9 +517,9 @@ export default function ProductDetail() {
 
         {/* FEATURED PRODUCTS SIDEBAR */}
         <aside className="lg:col-span-1 mt-10 lg:mt-0">
-          <h2 className="text-xl font-semibold mb-5">Featured Products</h2>
+          <h2 className="text-xl font-semibold mb-5">Related Products</h2>
           {featuredProducts?.length === 0 ? (
-            <p className="text-gray-600">No featured products available</p>
+            <p className="text-gray-600">No related products available</p>
           ) : (
             <div className="space-y-6">
               {featuredProducts?.map((product, index) => (
