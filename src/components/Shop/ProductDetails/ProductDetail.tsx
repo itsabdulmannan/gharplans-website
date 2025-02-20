@@ -1,14 +1,16 @@
 import { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { MdFavoriteBorder } from "react-icons/md";
-import { ShoppingCart, Star, Truck, ArrowLeft } from "lucide-react";
+import { ShoppingCart, Star, Truck, ArrowLeft, ArrowRight } from "lucide-react";
 import { GiWeightCrush } from "react-icons/gi";
 import { RxDimensions } from "react-icons/rx";
 import toast from "react-hot-toast";
-
+// import Zoom from "react-medium-image-zoom";
 import { Product, ReviewsData } from "../../../types";
 import { useProductHook } from "../hooks/productHook";
 import ReviewModal from "../../Modals/ReviewModal";
+4;
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function ProductDetail() {
   const navigate = useNavigate();
@@ -86,6 +88,16 @@ export default function ProductDetail() {
     toast.success("Product added to favourites!");
   };
 
+  const handlePrevImage = () => {
+    setSelectedImageIndex((prevIndex) => Math.max(prevIndex - 1, 0));
+  };
+
+  const handleNextImage = () => {
+    setSelectedImageIndex((prevIndex) =>
+      Math.min(prevIndex + 1, selectedColorImages.length - 1)
+    );
+  };
+
   const openReviewModal = () => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -118,13 +130,7 @@ export default function ProductDetail() {
       : prductByIdData?.image;
 
   return (
-    <div
-      // Option 1: use a very wide container out of the box:
-      // className="max-w-screen-2xl mx-auto px-6 sm:px-8 lg:px-10 py-10"
-      // Option 2: define a custom width (max-w-8xl) in your tailwind.config.js
-      // and then use it here:
-      className="max-w-screen-2xl mx-auto px-6 sm:px-8 lg:px-10 py-10"
-    >
+    <div className="max-w-screen-2xl mx-auto px-6 sm:px-8 lg:px-10 py-10">
       <Link
         to="/shop"
         className="inline-flex items-center text-[#792099] hover:text-[#792099] mb-6 transition duration-200"
@@ -133,33 +139,47 @@ export default function ProductDetail() {
         Back to Shop
       </Link>
 
-      {/* 
-        Larger gap: use something like lg:gap-16 
-        for more spacing between main content & sidebar.
-      */}
       <div className="lg:grid lg:grid-cols-4 lg:gap-16">
-        {/* MAIN CONTENT */}
         <div className="lg:col-span-3">
-          {/* 2-column layout for images & product info */}
           <div className="lg:grid lg:grid-cols-2 lg:gap-x-10">
-            {/* Product Images Section */}
             <div className="mb-10 lg:mb-0">
               <div className="relative w-full h-[550px] overflow-hidden bg-gray-100 rounded-lg">
-                <img
-                  src={mainImage}
-                  alt={prductByIdData?.name}
-                  className="
-                    w-full
-                    h-full
-                    object-cover
-                    object-center
-                    transition-transform
-                    duration-300
-                    ease-in-out
-                    transform
-                    hover:scale-110
-                  "
-                />
+                <AnimatePresence mode="wait">
+                  <motion.img
+                    key={mainImage}
+                    src={mainImage}
+                    alt={prductByIdData?.name}
+                    className="w-full h-full object-cover object-center"
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1.15 }}
+                    exit={{ opacity: 0, scale: 0.8 }}
+                    transition={{ duration: 0.5 }}
+                    whileHover={{ scale: 1.25 }} // Additional zoom on hover
+                  />
+                </AnimatePresence>
+
+                {selectedColorImages.length > 1 && (
+                  <>
+                    <motion.button
+                      onClick={handlePrevImage}
+                      disabled={selectedImageIndex === 0}
+                      whileTap={{ scale: 0.8, rotate: -10 }}
+                      className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-75 p-2 rounded-full hover:bg-opacity-100 disabled:opacity-50"
+                    >
+                      <ArrowLeft className="h-6 w-6 text-gray-700" />
+                    </motion.button>
+                    <motion.button
+                      onClick={handleNextImage}
+                      disabled={
+                        selectedImageIndex === selectedColorImages.length - 1
+                      }
+                      whileTap={{ scale: 0.8, rotate: 10 }}
+                      className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-75 p-2 rounded-full hover:bg-opacity-100 disabled:opacity-50"
+                    >
+                      <ArrowRight className="h-6 w-6 text-gray-700" />
+                    </motion.button>
+                  </>
+                )}
               </div>
 
               {selectedColorImages.length > 1 && (
@@ -517,9 +537,9 @@ export default function ProductDetail() {
 
         {/* FEATURED PRODUCTS SIDEBAR */}
         <aside className="lg:col-span-1 mt-10 lg:mt-0">
-          <h2 className="text-xl font-semibold mb-5">Related Products</h2>
+          <h2 className="text-xl font-semibold mb-5">Related Items</h2>
           {featuredProducts?.length === 0 ? (
-            <p className="text-gray-600">No related products available</p>
+            <p className="text-gray-600">No related Items</p>
           ) : (
             <div className="space-y-6">
               {featuredProducts?.map((product, index) => (

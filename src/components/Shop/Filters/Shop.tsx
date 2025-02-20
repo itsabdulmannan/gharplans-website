@@ -15,12 +15,12 @@ export default function Shop() {
     getCategory(setCategoryData);
   }, []);
 
-  const priceRanges = [
-    { label: "Under 1000", range: "under-1000" },
-    { label: "1000 - 5000", range: "1000-5000" },
-    { label: "5000 - 10000", range: "5000-10000" },
-    { label: "Above 10000", range: "above-10000" },
-  ];
+  // const priceRanges = [
+  //   { label: "Under 1000", range: "under-1000" },
+  //   { label: "1000 - 5000", range: "1000-5000" },
+  //   { label: "5000 - 10000", range: "5000-10000" },
+  //   { label: "Above 10000", range: "above-10000" },
+  // ];
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -61,7 +61,7 @@ export default function Shop() {
           </div>
 
           {/* Price Range Container */}
-          <div className="bg-gray-100 p-4 rounded-lg shadow-md mt-4">
+          {/* <div className="bg-gray-100 p-4 rounded-lg shadow-md mt-4">
             <h3 className="text-lg font-semibold mb-4">Price Range</h3>
             <div className="space-y-2">
               {priceRanges.map(({ label, range }) => (
@@ -81,7 +81,7 @@ export default function Shop() {
                 </button>
               ))}
             </div>
-          </div>
+          </div> */}
         </div>
 
         <div className="flex-1">
