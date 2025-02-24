@@ -5,11 +5,9 @@ import { ShoppingCart, Star, Truck, ArrowLeft, ArrowRight } from "lucide-react";
 import { GiWeightCrush } from "react-icons/gi";
 import { RxDimensions } from "react-icons/rx";
 import toast from "react-hot-toast";
-// import Zoom from "react-medium-image-zoom";
 import { Product, ReviewsData } from "../../../types";
 import { useProductHook } from "../hooks/productHook";
 import ReviewModal from "../../Modals/ReviewModal";
-4;
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function ProductDetail() {
@@ -27,14 +25,11 @@ export default function ProductDetail() {
 
   const [quantity, setQuantity] = useState(1);
   const [prductByIdData, setPrductByIdData] = useState<Product | null>(null);
-
   const [activeTab, setActiveTab] = useState("description");
-
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [reviewsData, setReviewsData] = useState<ReviewsData>([]);
   const [showFullDescription, setShowFullDescription] = useState(false);
-
   const [selectedColorIndex, setSelectedColorIndex] = useState(0);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
@@ -71,7 +66,6 @@ export default function ProductDetail() {
       toast.error("Invalid or missing Product ID.");
       return;
     }
-
     postReview(productId, rating, reviewText);
     toast.success("Review submitted successfully!");
   };
@@ -130,7 +124,7 @@ export default function ProductDetail() {
       : prductByIdData?.image;
 
   return (
-    <div className="max-w-screen-2xl mx-auto px-6 sm:px-8 lg:px-10 py-10">
+    <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-10 py-10">
       <Link
         to="/shop"
         className="inline-flex items-center text-[#792099] hover:text-[#792099] mb-6 transition duration-200"
@@ -139,11 +133,13 @@ export default function ProductDetail() {
         Back to Shop
       </Link>
 
-      <div className="lg:grid lg:grid-cols-4 lg:gap-16">
+      {/* Main Content Grid: stacks on mobile, grid on lg and up */}
+      <div className="grid grid-cols-1 lg:grid-cols-4 lg:gap-16">
         <div className="lg:col-span-3">
-          <div className="lg:grid lg:grid-cols-2 lg:gap-x-10">
-            <div className="mb-10 lg:mb-0">
-              <div className="relative w-full h-[550px] overflow-hidden bg-gray-100 rounded-lg">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-x-10">
+            {/* Product Image & Gallery */}
+            <div className="mb-10">
+              <div className="relative w-full h-64 sm:h-80 md:h-[450px] lg:h-[550px] overflow-hidden bg-gray-100 rounded-lg">
                 <AnimatePresence mode="wait">
                   <motion.img
                     key={mainImage}
@@ -154,7 +150,7 @@ export default function ProductDetail() {
                     animate={{ opacity: 1, scale: 1.15 }}
                     exit={{ opacity: 0, scale: 0.8 }}
                     transition={{ duration: 0.5 }}
-                    whileHover={{ scale: 1.25 }} // Additional zoom on hover
+                    whileHover={{ scale: 1.25 }}
                   />
                 </AnimatePresence>
 
@@ -206,9 +202,9 @@ export default function ProductDetail() {
 
               {/* Tabs for description, additional info, reviews */}
               <div className="mt-12">
-                <div className="flex border-b">
+                <div className="flex border-b overflow-x-auto">
                   <button
-                    className={`px-4 py-2 font-medium transition duration-200 cursor-pointer ${
+                    className={`px-4 py-2 font-medium transition duration-200 cursor-pointer whitespace-nowrap ${
                       activeTab === "description"
                         ? "border-b-2 border-[#792099] text-[#792099]"
                         : "text-gray-600 hover:text-[#792099]"
@@ -217,9 +213,8 @@ export default function ProductDetail() {
                   >
                     Short Description
                   </button>
-
                   <button
-                    className={`px-4 py-2 font-medium transition duration-200 cursor-pointer ${
+                    className={`px-4 py-2 font-medium transition duration-200 cursor-pointer whitespace-nowrap ${
                       activeTab === "additional"
                         ? "border-b-2 border-[#792099] text-[#792099]"
                         : "text-gray-600 hover:text-[#792099]"
@@ -228,9 +223,8 @@ export default function ProductDetail() {
                   >
                     Long Description
                   </button>
-
                   <button
-                    className={`px-4 py-2 font-medium transition duration-200 cursor-pointer ${
+                    className={`px-4 py-2 font-medium transition duration-200 cursor-pointer whitespace-nowrap ${
                       activeTab === "reviews"
                         ? "border-b-2 border-[#792099] text-[#792099]"
                         : "text-gray-600 hover:text-[#792099]"
@@ -253,7 +247,6 @@ export default function ProductDetail() {
                   {activeTab === "description" && (
                     <p>{prductByIdData?.shortDescription}</p>
                   )}
-
                   {activeTab === "additional" && (
                     <div>
                       <p className="text-justify">
@@ -277,7 +270,6 @@ export default function ProductDetail() {
                         )}
                     </div>
                   )}
-
                   {activeTab === "reviews" && (
                     <div>
                       {reviewsData.length === 0 ? (
@@ -290,7 +282,6 @@ export default function ProductDetail() {
                                 {review.user.firstName} {review.user.lastName}
                               </h1>
                             </div>
-
                             <div className="mt-2 flex items-center">
                               <span className="font-medium mr-2">Rating:</span>
                               <div className="flex space-x-1">
@@ -308,7 +299,6 @@ export default function ProductDetail() {
                                 ))}
                               </div>
                             </div>
-
                             <p className="mt-1">Review: {review.review}</p>
                             <p className="mt-1 text-sm text-gray-500">
                               Reviewed on:{" "}
@@ -324,12 +314,11 @@ export default function ProductDetail() {
             </div>
 
             {/* Product Info Section */}
-            <div className="lg:pl-8 mt-10 lg:mt-0">
+            <div className="lg:pl-8 mt-10 md:mt-0 px-4">
               <div className="mb-8">
-                <h1 className="text-3xl font-bold text-gray-900 mb-2">
+                <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
                   {prductByIdData?.name}
                 </h1>
-
                 <div className="flex items-center mb-4">
                   <div className="flex items-center">
                     {[...Array(5)].map((_, index) => (
@@ -350,7 +339,6 @@ export default function ProductDetail() {
                     ({prductByIdData?.reviews ?? 0} reviews)
                   </span>
                 </div>
-
                 <div className="text-sm font-semibold mb-2">
                   {prductByIdData?.remainingProduct === 0 ? (
                     <span className="text-red-500">Out of Stock</span>
@@ -358,28 +346,21 @@ export default function ProductDetail() {
                     <span className="text-green-600">In Stock</span>
                   )}
                 </div>
-
-                <p className="text-3xl font-bold text-gray-900 mb-4">
+                <p className="text-2xl md:text-3xl font-bold text-gray-900 mb-4">
                   {prductByIdData?.currency}{" "}
-                  {parseFloat(prductByIdData?.price?.toString() || "0").toFixed(
-                    2
-                  )}
+                  {parseFloat(prductByIdData?.price?.toString() || "0").toFixed(2)}
                 </p>
 
-                {/* Discount Tiers */}
                 {/* Discount Tiers */}
                 {prductByIdData?.discountTiers?.some(
                   (tier) => tier.range !== "No discount"
                 ) && (
-                  <div className="mb-5 grid grid-cols-2 gap-y-2">
+                  <div className="mb-5 grid grid-cols-1 sm:grid-cols-2 gap-y-2">
                     <div className="space-y-1 text-gray-700">
                       {prductByIdData?.discountTiers
                         ?.filter((tier) => tier.range !== "No discount")
                         .map((tier, index) => (
-                          <div
-                            key={index}
-                            className="flex justify-between w-full"
-                          >
+                          <div key={index} className="flex justify-between w-full">
                             <span className="whitespace-nowrap">
                               {tier.range} pieces:
                             </span>
@@ -404,8 +385,7 @@ export default function ProductDetail() {
                                 const city = charge?.destinationCity?.name
                                   ? charge.destinationCity.name
                                   : "Lahore";
-                                const amount =
-                                  Number(charge?.deliveryCharge) || 0;
+                                const amount = Number(charge?.deliveryCharge) || 0;
                                 return `${city}: ${
                                   amount > 0 ? `PKR${amount}` : "Free"
                                 }`;
@@ -415,7 +395,6 @@ export default function ProductDetail() {
                         : "Lahore: Free"}
                     </span>
                   </div>
-
                   {prductByIdData?.dimension && (
                     <div className="flex items-center text-gray-600">
                       <RxDimensions className="h-5 w-5 mr-2 text-gray-500" />
@@ -436,7 +415,6 @@ export default function ProductDetail() {
                       </span>
                     </div>
                   )}
-
                   {prductByIdData?.weight && prductByIdData?.unit && (
                     <div className="flex items-center text-gray-600">
                       <GiWeightCrush className="h-5 w-5 mr-2 text-gray-500" />
@@ -498,13 +476,13 @@ export default function ProductDetail() {
                 </div>
               </div>
 
-              <div className="flex space-x-4 mb-10">
+              <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4 mb-10">
                 <button
                   onClick={() =>
                     handleAddToCart(quantity, Number(prductByIdData?.id) || 0)
                   }
                   disabled={prductByIdData?.remainingProduct === 0}
-                  className={`cursor-pointer flex-1 bg-[#792099] text-white font-semibold shadow-md px-6 py-3 rounded-md flex items-center justify-center transition duration-200 ${
+                  className={`flex-1 bg-[#792099] text-white font-semibold shadow-md px-6 py-3 rounded-md flex items-center justify-center transition duration-200 ${
                     prductByIdData?.remainingProduct === 0
                       ? "opacity-50 cursor-not-allowed"
                       : "hover:bg-[#792099]"
@@ -516,7 +494,7 @@ export default function ProductDetail() {
 
                 <button
                   onClick={openReviewModal}
-                  className="p-3 border border-gray-300 rounded-md hover:bg-gray-50 flex items-center gap-2 cursor-pointer"
+                  className="flex-1 p-3 border border-gray-300 rounded-md hover:bg-gray-50 flex items-center gap-2 cursor-pointer"
                 >
                   <Star className="h-5 w-5 text-[#792099]" />
                   <span>Add Review</span>
@@ -536,7 +514,7 @@ export default function ProductDetail() {
         </div>
 
         {/* FEATURED PRODUCTS SIDEBAR */}
-        <aside className="lg:col-span-1 mt-10 lg:mt-0">
+        <aside className="mt-10 lg:mt-0 lg:col-span-1 px-4">
           <h2 className="text-xl font-semibold mb-5">Related Items</h2>
           {featuredProducts?.length === 0 ? (
             <p className="text-gray-600">No related Items</p>

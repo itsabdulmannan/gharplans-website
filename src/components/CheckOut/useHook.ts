@@ -20,6 +20,16 @@ export const useCart = () => {
       throw error;
     }
   };
+  const getUser = async (setUserData: Function): Promise<any> => {
+    try {
+      const response = await Apis.getUser();
+      setUserData(response.data.getUser);
+      return response;
+    } catch (error: any) {
+      console.error("Error fetching user:", error.message);
+      throw error;
+    }
+  };
 
-  return { getBankAccountDetails, createOrder };
+  return { getBankAccountDetails, createOrder, getUser };
 };

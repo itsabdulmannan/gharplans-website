@@ -6,8 +6,8 @@ import { FaYoutube } from "react-icons/fa";
 function Footer() {
   return (
     <div className="bg-[#792099] w-full">
-      <div className="py-8 px-4 sm:px-6 lg:px-8 flex justify-between items-center max-w-screen-xl mx-auto">
-        <span className="text-white">
+      <div className="py-8 px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center max-w-screen-xl mx-auto">
+        <span className="text-white text-center md:text-left mb-4 md:mb-0">
           © +92 315 5111119, 339 5111 199 (Shop) | info@gharplans.pk
         </span>
         <div className="flex space-x-4 text-white">

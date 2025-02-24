@@ -21,9 +21,17 @@ export default function Cart() {
     if (newQuantity < 1) return;
     try {
       await updateCart(Number(id), newQuantity, productId);
+      // Recalculate the itemTotal based on the new quantity
       setCartItems((items) =>
         items.map((item) =>
-          item.id === id ? { ...item, quantity: newQuantity } : item
+          item.id === id
+            ? {
+                ...item,
+                quantity: newQuantity,
+                itemTotal:
+                  newQuantity * Number(item.product?.singleProductPrice ?? 0),
+              }
+            : item
         )
       );
       toast.success("Quantity updated");
@@ -46,7 +54,7 @@ export default function Cart() {
     }
   };
 
-  // Calculate the subtotal by summing each item's itemTotal (converted to a number)
+  // Calculate the subtotal by summing each item's itemTotal
   const subtotal = Array.isArray(cartItems)
     ? cartItems.reduce((sum, item) => sum + Number(item.itemTotal), 0)
     : 0;
@@ -68,7 +76,7 @@ export default function Cart() {
           <div className="mt-6">
             <Link
               to="/shop"
-              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700"
+              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-[#792099] hover:bg-[#792099] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#792099]"
             >
               Continue Shopping
             </Link>
@@ -80,7 +88,7 @@ export default function Cart() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <h1 className="text-3xl font-bold text-gray-900 mb-8">Shopping Cart</h1>
+      <h1 className="text-3xl font-bold text-[#792099] mb-8">Shopping Cart</h1>
       <div className="lg:grid lg:grid-cols-12 lg:gap-x-12 lg:items-start">
         <div className="lg:col-span-7">
           {cartItems.map((item) => (
@@ -90,12 +98,11 @@ export default function Cart() {
             >
               <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
                 <img
-                  src={item?.product?.colors[0].image}
+                  src={item?.product?.colors[0]?.image[0]}
                   alt={item.name}
                   className="h-full w-full object-cover object-center"
                 />
               </div>
-
               <div className="ml-4 flex flex-1 flex-col">
                 <div>
                   <div className="flex justify-between text-base font-medium text-gray-900">
@@ -104,7 +111,7 @@ export default function Cart() {
                         {item?.product?.name}
                       </Link>
                     </h3>
-                    <p className="ml-4">${item?.itemTotal}</p>
+                    <p className="ml-4">${Number(item.itemTotal).toFixed(2)}</p>
                   </div>
                   <p className="mt-1 text-sm text-gray-500">
                     ${item?.product?.singleProductPrice} each
@@ -122,7 +129,7 @@ export default function Cart() {
                       }
                       className="p-1 rounded-md hover:bg-gray-100"
                     >
-                      <Minus className="h-4 w-4" />
+                      <Minus className="h-4 w-4 cursor-pointer text-[#792099]" />
                     </button>
                     <span className="font-medium text-gray-900 text-lg p-1">
                       {item.quantity}
@@ -137,14 +144,14 @@ export default function Cart() {
                       }
                       className="p-1 rounded-md hover:bg-gray-100 cursor-pointer"
                     >
-                      <Plus className="h-4 w-4" />
+                      <Plus className="h-4 w-4 text-[#792099]" />
                     </button>
                   </div>
                   <button
                     onClick={() => removeItem(Number(item.id))}
-                    className="font-medium text-[#b1a249] hover:text-[#8a7d2a] transition duration-200 cursor-pointer"
+                    className="font-medium text-[#792099] hover:text-[#792099] transition duration-200 cursor-pointer"
                   >
-                    <X className="h-5 w-5" />
+                    <X className="h-5 w-5 text-[#792099]" />
                   </button>
                 </div>
               </div>
@@ -183,11 +190,10 @@ export default function Cart() {
               </div>
             </div>
 
-            {/* Pass the calculated values via state */}
             <Link
               to="/checkout"
               state={{ subtotal, shipping, total }}
-              className="mt-6 w-full flex items-center justify-center px-6 py-3 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-[#b1a249] hover:bg-[#f3ffc0] hover:text-[#b1a249] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#b1a249] transition duration-200"
+              className="mt-6 w-full flex items-center justify-center px-6 py-3 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-[#792099] hover:bg-[#792099] hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#792099] transition duration-200"
             >
               Proceed to Checkout
               <ArrowRight className="ml-2 h-5 w-5" />
@@ -196,7 +202,7 @@ export default function Cart() {
             <div className="mt-6 text-center">
               <Link
                 to="/shop"
-                className="text-sm font-medium text-[#b1a249] hover:text-[#8a7d2a] transition duration-200"
+                className="text-sm font-medium text-[#792099] hover:text-[#792099] transition duration-200"
               >
                 Continue Shopping
               </Link>
