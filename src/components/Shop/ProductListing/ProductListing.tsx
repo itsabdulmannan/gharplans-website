@@ -16,20 +16,21 @@ export default function ProductListing({
   currentPage: number;
   setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
 }) {
-  const { getProduct, getCarouselItems } = useProductHook();
+  const { getProduct, getBannerItems } = useProductHook();
   const [productData, setProductData] = useState<Product[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [carouselItems, setCarouselItems] = useState<Product[]>([]);
+  const [bannerItems, setBannerItems] = useState<Product[]>([]);
   const limit = 12;
   const offset = (currentPage - 1) * limit;
 
   const [minPrice, maxPrice] = selectedPrice
     ? selectedPrice.split("-").map(Number)
     : [undefined, undefined];
-  useEffect(() => {
-    getCarouselItems(setCarouselItems);
-  }, []);
 
+  useEffect(() => {
+    getBannerItems(setBannerItems);
+  }, []);
+  console.log(bannerItems);
   useEffect(() => {
     getProduct(
       setProductData,
@@ -47,7 +48,6 @@ export default function ProductListing({
     product.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  // Helper function to safely get the image URL
   const getImageSrc = (item: Product) => {
     if (item.colors && item.colors.length > 0 && item.colors[0].image) {
       const image = item.colors[0].image;
@@ -70,24 +70,24 @@ export default function ProductListing({
           onPointerEnterCapture={() => console.log("Pointer entered")}
           onPointerLeaveCapture={() => console.log("Pointer left")}
         >
-          {carouselItems.length > 0 ? (
-            carouselItems.map((item) => (
-              <div key={item?.id} className="relative h-[350px]">
+          {bannerItems.length > 0 ? (
+            bannerItems.map((item) => (
+              <div key={item.id} className="relative h-[350px]">
                 <img
-                  src={getImageSrc(item)}
-                  alt={item.name}
+                  src={item.image}
+                  alt={item.title}
                   className="h-full w-full object-cover"
                 />
                 <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 mb-6 text-white text-center z-20">
-                  <h3 className="text-2xl font-semibold mb-2">{item.name}</h3>
+                  <h3 className="text-2xl font-semibold mb-2">{item.title}</h3>
                   <p className="mb-4">
-                    {item.shortDescription || "No description available."}
+                    {item.description || "No description available."}
                   </p>
-                  <Link to={`/shop/product/${item.id}`}>
+                  <a href={item.link} target="_blank" rel="noopener noreferrer">
                     <button className="bg-[#792099] text-white font-semibold shadow-md hover:bg-[#792099] hover:text-white focus:bg-[#792099] focus:text-white focus:font-semibold focus:shadow-lg transition duration-200 px-4 py-2 cursor-pointer">
-                      View Product
+                      View Banner
                     </button>
-                  </Link>
+                  </a>
                 </div>
               </div>
             ))

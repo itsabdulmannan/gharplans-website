@@ -108,4 +108,5 @@ export const Apis = {
     Request.put(`/cart/update`, { id, quantity, productId }),
   createOrder: (body: any) => Request.post("/orders", body),
   getCaoruselItems: () => Request.get("/product/carousel-products"),
+  getBannerItems: () => Request.get("/banners/get"),
 };

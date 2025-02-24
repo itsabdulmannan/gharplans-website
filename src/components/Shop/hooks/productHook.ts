@@ -119,6 +119,15 @@ export const useProductHook = () => {
       console.error("Error fetching carousel items:", error);
     }
   };
+  const getBannerItems = async (setBannerItems: Function) => {
+    try {
+      const response = await Apis.getBannerItems();
+      setBannerItems(response.data);
+    } catch (error) {
+      console.error("Error fetching banner items:", error);
+      return error;
+    }
+  };
   return {
     getProduct,
     getCategory,
@@ -130,5 +139,6 @@ export const useProductHook = () => {
     addToFavourite,
     addToCart,
     getCarouselItems,
+    getBannerItems,
   };
 };
